@@ -10,6 +10,7 @@ public class SpriteManager : MonoBehaviour
     [System.Serializable]
     public struct TileType {
         public string name;
+        public int id;
         public int amount;
         public bool isAnimation;
         public int animationFrames;
@@ -17,27 +18,24 @@ public class SpriteManager : MonoBehaviour
     }
     public TileType[] tileTypes;
     public float inverseVariationFactor;
-    private Dictionary<string, int> typeAmounts;
+    private Dictionary<string, TileType> typeToInfo;
     private Dictionary<string, Sprite[]> animations;
-    private Dictionary<string, float> frameRates;
 
-    private string[] directions = {"Center", "Top", "Left", "Down", "Right", "Bottom", "TopLeft", "TopRight", "BottomLeft", 
-                                   "BottomRight", "TopLeftL", "TopRightL", "BottomLeftL", "BottomRightL"};
+    string[] stringTypes = {"Center", "Top", "Right", "Bottom", "Left", "TopLeft", "TopRight", "BottomLeft", "BottomRight", 
+                             "TopLeftL", "TopRightL", "BottomLeftL", "BottomRightL", "LeftDiagonal", "RightDiagonal"};
 
     public void Initialize() {
-        typeAmounts = new Dictionary<string, int>();
+        typeToInfo = new Dictionary<string, TileType>();
         animations = new Dictionary<string, Sprite[]>();
-        frameRates = new Dictionary<string, float>();
         foreach(TileType tileType in tileTypes){
-            typeAmounts[tileType.name] = tileType.amount;
-            frameRates[tileType.name] = tileType.frameRate;
+            typeToInfo[tileType.name] = tileType;
             if(tileType.isAnimation){
-                foreach(string dir in directions){
+                foreach(string type in stringTypes){
                     Sprite[] frames = new Sprite[tileType.animationFrames];
                     for(int i = 0; i < tileType.animationFrames; ++i){
-                        frames[i] = GetSprite(tileType.name + dir + i);
+                        frames[i] = GetSprite(tileType.name + type + i);
                     }
-                    animations[tileType.name + dir] = frames;
+                    animations[tileType.name + type] = frames;
                 }
             }
         }
@@ -50,8 +48,8 @@ public class SpriteManager : MonoBehaviour
     public Sprite GetAutoTile(string name){
         string type = name.Split(new string[] {"Center"}, System.StringSplitOptions.None)[0];
         if(!type.Equals(name)){
-            int rand = (int) Random.Range(0, (typeAmounts[type] - 1) * inverseVariationFactor);
-            rand -= (int)((typeAmounts[type] - 1) * (inverseVariationFactor - 1));
+            int rand = (int) Random.Range(0, (typeToInfo[type].amount - 1) * inverseVariationFactor);
+            rand -= (int)((typeToInfo[type].amount - 1) * (inverseVariationFactor - 1));
             if(rand < 0) rand = 0;
             return GetSprite(name + rand);
         }
@@ -63,6 +61,6 @@ public class SpriteManager : MonoBehaviour
     }
 
     public float GetAnimationFrameRate(string name){
-        return frameRates[name];
+        return typeToInfo[name].frameRate;
     }
 }
