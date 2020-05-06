@@ -36,14 +36,15 @@ public class TerrainBrush {
     //     return ids;
     // }
 
-    public int[,] Paint(int[,] ids, int currId, int x, int y, int xChunk, int yChunk){
+    public void Paint(Chunk chunk, int currId, int x, int y){
         for(int xd = -size / 2; xd < size / 2 + 1; ++xd){
             for(int yd = -size / 2; yd < size / 2 + 1; ++yd){
-                if(Mathf.Abs(x + xd - xChunk * Chunk.chunkSize) > 1 || Mathf.Abs(y + yd - yChunk * Chunk.chunkSize) > 1) { Debug.Log(new Vector2(x + xd, y + yd)); continue;} 
-                ids[x + xd, y + yd] = currId;
+                if(xd * xd + yd * yd < size * size) {
+                    if(x + xd < 0 || x + xd >= Chunk.chunkSize || y + yd < 0 || y + yd >= Chunk.chunkSize) continue;
+                    chunk.grid[x + xd, y + yd].id = currId;
+                }
             }
         }
-        return ids;
     }
 
     public int Smooth(int[,] ids, int currId, int x, int y){

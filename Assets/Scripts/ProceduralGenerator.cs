@@ -10,6 +10,8 @@ public class ProceduralGenerator : MonoBehaviour
     public int chunkSize = 16;
     public int chunkAmount = 5;
 
+    Dictionary<Vector2, Chunk> loadedChunks;
+
     Vector2 prevPlayerPos;
 
     void TranslateChunks(Vector2 dir){
@@ -20,6 +22,10 @@ public class ProceduralGenerator : MonoBehaviour
                 if(((x == 0 && dir.x == 1) || (x == chunkAmount - 1 && dir.x == -1)) || 
                    ((y == 0 && dir.y == 1) || (y == chunkAmount - 1 && dir.y == -1))) {
                        StartCoroutine(world[x, y].DestroyChunk());
+                       if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Smoothed;
+                       if(!loadedChunks.ContainsKey(new Vector2(world[x,y].x, world[x,y].y))){
+                           loadedChunks[new Vector2(world[x,y].x, world[x,y].y)] = world[x,y];
+                       }
                        world[x,y] = null;
                 } else {
                     world[x - (int)dir.x, y - (int)dir.y] = world[x,y];
@@ -57,6 +63,7 @@ public class ProceduralGenerator : MonoBehaviour
 
     void Start()
     {
+        loadedChunks = new Dictionary<Vector2, Chunk>();
         Chunk.chunkSize = chunkSize;
         world = new Chunk[chunkAmount, chunkAmount];
         for(int x = 0; x < chunkAmount; ++x){
@@ -81,7 +88,11 @@ public class ProceduralGenerator : MonoBehaviour
         for(int x = 0; x < chunkAmount; ++x){
             for(int y = 0; y < chunkAmount; ++y){
                 if(world[x,y] == null){
-                    world[x,y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
+                    if(loadedChunks.ContainsKey(new Vector2(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2))){
+                        world[x,y] = loadedChunks[new Vector2(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2)];
+                    } else {
+                        world[x,y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
+                    }
                 }
             }
         }

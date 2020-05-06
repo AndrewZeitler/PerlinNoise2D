@@ -68,7 +68,7 @@ public class TileManager : MonoBehaviour
     }
 
     public TileInfo GetTile(int id){
-        if(id < 0 || id >= tiles.Count) return null;
+        if(id < 0 || id >= tiles.Count) {return null;}
         return tiles[id];
     }
 
