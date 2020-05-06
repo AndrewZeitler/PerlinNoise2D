@@ -1,3 +1,4 @@
+using UnityEngine;
 
 public class TileInfo {
     public string tileName;
@@ -10,6 +11,8 @@ public class TileInfo {
     public float spawnChance;
     public float continuationBias;
     public int priority;
+    public bool hasAutoTiles;
+    public Sprite[] sprites;
 
     public TileInfo(EditorTile et, int id){
         tileName = et.tileName;
@@ -22,22 +25,29 @@ public class TileInfo {
         spawnChance = et.spawnChance;
         continuationBias = et.continuationBias;
         priority = et.priority;
+        hasAutoTiles = et.generateAutoTiles;
     }
 
     public TileInfo(EditorTile et, string tileName, int id){
         this.tileName = tileName;
         this.id = id;
-        if(et.id == id){
+        if(tileName.Contains("Center")){
             amount = et.amount;
+            isTerrain = et.isTerrain;
         } else {
             amount = 1;
+            isTerrain = false;
         }
         isAnimation = et.isAnimation;
         animationFrames = et.animationFrames;
         frameRate = et.frameRate;
-        isTerrain = et.isTerrain;
         spawnChance = et.spawnChance;
         continuationBias = et.continuationBias;
         priority = et.priority;
+        hasAutoTiles = et.generateAutoTiles;
+    }
+
+    public static int ComparePriority(TileInfo thisInfo, TileInfo other){
+        return other.priority.CompareTo(thisInfo.priority);
     }
 }

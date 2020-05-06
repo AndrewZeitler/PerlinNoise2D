@@ -7,11 +7,13 @@ public class Chunk {
     public int y;
     public static int chunkSize = 16;
     public Tile[,] grid;
+    public ChunkState chunkState;
 
     public Chunk(int x, int y){
         this.x = x;
         this.y = y;
         grid = new Tile[chunkSize, chunkSize];
+        chunkState = ChunkState.NotGenerated;
     }
 
     public IEnumerator DestroyChunk(){

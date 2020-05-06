@@ -131,7 +131,6 @@ GameObject:
   m_Component:
   - component: {fileID: 455990424}
   - component: {fileID: 455990423}
-  - component: {fileID: 455990425}
   m_Layer: 0
   m_Name: WorldGenerator
   m_TagString: Untagged
@@ -151,34 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc4bf6dd95fa354494a164322679b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultTile: grass
-  zoom: 32
-  tile: {fileID: 4040529437405381250, guid: 8eae0e6811c181b42a481fa81cc36b9a, type: 3}
-  tilesInfo:
-  - name: grass
-    id: 0
-    spawnChance: 0
-    continuationBias: 0
-    isAnimation: 0
-    priority: 0
-  - name: dirt
-    id: 1
-    spawnChance: 0.2
-    continuationBias: 0.4
-    isAnimation: 0
-    priority: 2
-  - name: stone
-    id: 2
-    spawnChance: 0.2
-    continuationBias: 0.2
-    isAnimation: 0
-    priority: 1
-  - name: water
-    id: 3
-    spawnChance: 0.05
-    continuationBias: 0.8
-    isAnimation: 1
-    priority: 3
+  tileManager: {fileID: 1902505192}
+  zoom: 16
+  smoothPadding: 1
+  renderedPadding: 1
+  smoothBrushSize: 5
 --- !u!4 &455990424
 Transform:
   m_ObjectHideFlags: 0
@@ -193,46 +169,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &455990425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 455990422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9cf4372968bb434fa3c4adda51c6ac4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  terrainSpriteSheet: {fileID: 4343727234628468602, guid: 8ca27a2fae5137a42b11ce083499509e,
-    type: 2}
-  tileTypes:
-  - name: grass
-    id: 0
-    amount: 12
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-  - name: dirt
-    id: 0
-    amount: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-  - name: stone
-    id: 0
-    amount: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-  - name: water
-    id: 0
-    amount: 1
-    isAnimation: 1
-    animationFrames: 3
-    frameRate: 0.3
-  inverseVariationFactor: 5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,6 +268,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1399724128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1399724130}
+  - component: {fileID: 1399724129}
+  m_Layer: 0
+  m_Name: SpriteManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1399724129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399724128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9cf4372968bb434fa3c4adda51c6ac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainSpriteSheet: {fileID: 4343727234628468602, guid: 8ca27a2fae5137a42b11ce083499509e,
+    type: 2}
+--- !u!4 &1399724130
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399724128}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1902505190
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,11 +356,179 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e537efc48ffbd2045816c78e3e3f7da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  spriteManager: {fileID: 1399724129}
+  defaultTileName: grass
+  tilePrefab: {fileID: 4040529437405381250, guid: 8eae0e6811c181b42a481fa81cc36b9a,
+    type: 3}
+  editorTiles:
+  - tileName: grass
+    id: 0
+    amount: 12
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 1
+    spawnChance: 0
+    continuationBias: 0
+    priority: 0
+    generateAutoTiles: 0
+    autoTiles:
+    - tileName: grassCenter
+      id: 0
+    - tileName: grassTop
+      id: 0
+    - tileName: grassRight
+      id: 0
+    - tileName: grassBottom
+      id: 0
+    - tileName: grassLeft
+      id: 0
+    - tileName: grassTopLeft
+      id: 0
+    - tileName: grassTopRight
+      id: 0
+    - tileName: grassBottomLeft
+      id: 0
+    - tileName: grassBottomRight
+      id: 0
+    - tileName: grassTopLeftL
+      id: 0
+    - tileName: grassTopRightL
+      id: 0
+    - tileName: grassBottomLeftL
+      id: 0
+    - tileName: grassBottomRightL
+      id: 0
+    - tileName: grassLeftDiagonal
+      id: 0
+    - tileName: grassRightDiagonal
+      id: 0
+  - tileName: dirt
+    id: 0
+    amount: 1
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 1
+    spawnChance: 0.3
+    continuationBias: 0.2
+    priority: 1
+    generateAutoTiles: 1
+    autoTiles:
+    - tileName: dirtCenter
+      id: 0
+    - tileName: dirtTop
+      id: 0
+    - tileName: dirtRight
+      id: 0
+    - tileName: dirtBottom
+      id: 0
+    - tileName: dirtLeft
+      id: 0
+    - tileName: dirtTopLeft
+      id: 0
+    - tileName: dirtTopRight
+      id: 0
+    - tileName: dirtBottomLeft
+      id: 0
+    - tileName: dirtBottomRight
+      id: 0
+    - tileName: dirtTopLeftL
+      id: 0
+    - tileName: dirtTopRightL
+      id: 0
+    - tileName: dirtBottomLeftL
+      id: 0
+    - tileName: dirtBottomRightL
+      id: 0
+    - tileName: dirtLeftDiagonal
+      id: 0
+    - tileName: dirtRightDiagonal
+      id: 0
+  - tileName: stone
+    id: 0
+    amount: 1
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 1
+    spawnChance: 0.1
+    continuationBias: 0.1
+    priority: 2
+    generateAutoTiles: 1
+    autoTiles:
+    - tileName: stoneCenter
+      id: 0
+    - tileName: stoneTop
+      id: 0
+    - tileName: stoneRight
+      id: 0
+    - tileName: stoneBottom
+      id: 0
+    - tileName: stoneLeft
+      id: 0
+    - tileName: stoneTopLeft
+      id: 0
+    - tileName: stoneTopRight
+      id: 0
+    - tileName: stoneBottomLeft
+      id: 0
+    - tileName: stoneBottomRight
+      id: 0
+    - tileName: stoneTopLeftL
+      id: 0
+    - tileName: stoneTopRightL
+      id: 0
+    - tileName: stoneBottomLeftL
+      id: 0
+    - tileName: stoneBottomRightL
+      id: 0
+    - tileName: stoneLeftDiagonal
+      id: 0
+    - tileName: stoneRightDiagonal
+      id: 0
+  - tileName: water
+    id: 0
+    amount: 1
+    isAnimation: 1
+    animationFrames: 3
+    frameRate: 0.3
+    isTerrain: 1
+    spawnChance: 0.05
+    continuationBias: 0.8
+    priority: 4
+    generateAutoTiles: 1
+    autoTiles:
+    - tileName: waterCenter
+      id: 0
+    - tileName: waterTop
+      id: 0
+    - tileName: waterRight
+      id: 0
+    - tileName: waterBottom
+      id: 0
+    - tileName: waterLeft
+      id: 0
+    - tileName: waterTopLeft
+      id: 0
+    - tileName: waterTopRight
+      id: 0
+    - tileName: waterBottomLeft
+      id: 0
+    - tileName: waterBottomRight
+      id: 0
+    - tileName: waterTopLeftL
+      id: 0
+    - tileName: waterTopRightL
+      id: 0
+    - tileName: waterBottomLeftL
+      id: 0
+    - tileName: waterBottomRightL
+      id: 0
+    - tileName: waterLeftDiagonal
+      id: 0
+    - tileName: waterRightDiagonal
+      id: 0
 --- !u!1 &2104531808
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,8 +560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 519420028}
   generator: {fileID: 455990423}
-  chunkSize: 16
-  chunkAmount: 5
+  chunkSize: 8
+  chunkAmount: 7
 --- !u!4 &2104531810
 Transform:
   m_ObjectHideFlags: 0

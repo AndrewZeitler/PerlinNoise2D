@@ -47,6 +47,8 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\Chunk.cs" />
+     <Compile Include="Assets\Scripts\ChunkState.cs" />
+     <Compile Include="Assets\Scripts\PerlinNoiseGenerator.cs" />
      <Compile Include="Assets\Scripts\ProceduralGenerator.cs" />
      <Compile Include="Assets\Scripts\SpriteManager.cs" />
      <Compile Include="Assets\Scripts\TerrainBrush.cs" />

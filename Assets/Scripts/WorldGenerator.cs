@@ -4,258 +4,210 @@ using UnityEngine;
 
 public class WorldGenerator : MonoBehaviour
 {
-    [System.Serializable]
-    public struct TileInfo {
-        public string name;
-        public int id;
-        public float spawnChance;
-        public float continuationBias;
-        public bool isAnimation;
-        public int priority;
-    }
-    public string defaultTile = "grass";
-    public float zoom = 16;
-    public GameObject tile;
-    public TileInfo[] tilesInfo;
+    public TileManager tileManager;
+    public double zoom = 16;
     int seed;
-
-    Dictionary<string, int> tileTypes;
-    Dictionary<int, TileInfo> typeToInfo;
+    List<TileInfo> terrainTiles;
+    public int smoothPadding;
+    public int renderedPadding;
+    public int smoothBrushSize;
+    PerlinNoiseGenerator generator;
+    TerrainBrush terrainBrush;
 
     void Start()
     {
+        generator = new PerlinNoiseGenerator();
         seed = System.Environment.TickCount;
-        Random.InitState(seed);
-        tileTypes = new Dictionary<string, int>();
-        typeToInfo = new Dictionary<int, TileInfo>();
-        
+        Debug.Log("Seed: " + seed);
+        terrainBrush = new TerrainBrush(smoothBrushSize);
 
-        foreach(TileInfo info in tilesInfo){
-            tileTypes[info.name] = info.id;
-            typeToInfo[info.id] = info;
+        terrainTiles = new List<TileInfo>();
+        foreach(TileInfo tile in tileManager.tiles){
+            if(tile.isTerrain){
+                terrainTiles.Add(tile);
+            }
         }
+        terrainTiles.Sort(TileInfo.ComparePriority);
     }
-
-    // Gets the tile type from the random value generated
-    // string GetTypeFromRand(Chunk chunk, int x, int y, double rand){
-    //     int otherType = -1;
-    //     int defaultType = tileTypes[defaultTile];
-    //     for(int xd = -1; xd < 2 && otherType == -1; ++xd){
-    //         for(int yd = -1; yd < 2 && otherType == -1; ++yd){
-    //             if(x + xd < 0 || x + xd >= Chunk.chunkSize || y + yd < 0 || y + yd >= Chunk.chunkSize) continue;
-    //             if(chunk.grid[x + xd, y + yd] == null) continue;
-    //             if(chunk.grid[x + xd, y + yd].id != defaultType) otherType = chunk.grid[x + xd, y + yd].id;
-    //         }
-    //     }
-
-    //     if(otherType != -1){
-    //         if(rand >= idToRange[otherType].x - idToContinuation[otherType] && 
-    //            rand <= idToRange[otherType].y + idToContinuation[otherType]){
-    //             return typeToTile[otherType];
-    //         }
-    //         return defaultTile;
-    //     }
-
-    //     foreach (var item in tileRanges){
-    //         if(rand >= item.Key.x && rand <= item.Key.y){
-    //             return item.Value;
-    //         }
-    //     }
-    //     return "";
-    // }
-    // public void GenerateChunk(Chunk chunk){;
-    //     for(int x = 0; x < Chunk.chunkSize; x++){
-    //         for(int y = 0; y < Chunk.chunkSize; y++){
-    //             double result = Mathf.PerlinNoise((x + Chunk.chunkSize * chunk.x + System.Int16.MaxValue / 2) / zoom, 
-    //                                               (y + Chunk.chunkSize * chunk.y + System.Int16.MaxValue / 2) / zoom);
-    //             result = Mathf.Clamp((float) result, 0f, 1.0f);
-    //             chunk.grid[x, y] = new Tile(tileTypes[GetTypeFromRand(chunk, x, y, result)]);
-    //         }
-    //     }
-    // }
-    // public IEnumerator GenerateChunkConcurrently(Chunk chunk){;
-    //     for(int x = 0; x < Chunk.chunkSize; x++){
-    //         for(int y = 0; y < Chunk.chunkSize; y++){
-    //             double result = Mathf.PerlinNoise((x + Chunk.chunkSize * chunk.x + System.Int16.MaxValue / 2) / zoom, 
-    //                                               (y + Chunk.chunkSize * chunk.y + System.Int16.MaxValue / 2) / zoom);
-    //             result = Mathf.Clamp((float) result, 0f, 1.0f);
-    //             chunk.grid[x, y] = new Tile(tileTypes[GetTypeFromRand(chunk, x, y, result)]);
-    //         }
-    //         yield return new WaitForEndOfFrame();
-    //     }
-    // }
 
     bool isInChunk(int x, int y){
         return !(x < 0 || x >= Chunk.chunkSize || y < 0 || y >= Chunk.chunkSize);
     }
 
-    bool isContinuation(Chunk chunk, int x, int y, int id){
+    bool isContinuation(Chunk[,] chunks, int xChunk, int yChunk, int x, int y, int id){
         for(int xd = -1; xd < 2; ++xd){
             for(int yd = -1; yd < 2; ++yd){
-                if(!isInChunk(x + xd, y + yd)) continue;
-                if(chunk.grid[x + xd, y + yd].id == id) return true;
+                if(!isInChunk(x + xd, y + yd)) { continue;
+                }
+                if(chunks[xChunk, yChunk].grid[x + xd, y + yd].id == id) return true;
             }
         }
         return false;
     }
 
-    public void GenerateChunk(Chunk chunk){
+    public int[,] CreateChunksArray(Chunk[,] chunks){
+        int[,] ids = new int[chunks.GetLength(0) * Chunk.chunkSize, chunks.GetLength(1) * Chunk.chunkSize];
+        for(int x = 0; x < chunks.GetLength(0); ++x){
+            for(int y = 0; y < chunks.GetLength(1); ++y){
+                for(int xc = 0; xc < Chunk.chunkSize; ++xc){
+                    for(int yc = 0; yc < Chunk.chunkSize; ++yc){
+                        ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc] = chunks[x,y].grid[xc,yc].id;
+                    }
+                }
+            }
+        }
+        return ids;
+    }
+
+    public void SaveChunksArray(Chunk[,] chunks, int[,] ids){
+        for(int x = 0; x < chunks.GetLength(0); ++x){
+            for(int y = 0; y < chunks.GetLength(1); ++y){
+                if(chunks[x,y].chunkState != ChunkState.Smoothed) continue;
+                for(int xc = 0; xc < Chunk.chunkSize; ++xc){
+                    for(int yc = 0; yc < Chunk.chunkSize; ++yc){
+                        chunks[x,y].grid[xc,yc].id = ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc];
+                    }
+                }
+                chunks[x,y].chunkState = ChunkState.Saved;
+            }
+        }
+    }
+
+    public void LoadChunks(Chunk[,] chunks){
+        for(int x = 0; x < chunks.GetLength(0); ++x){
+            for(int y = 0; y < chunks.GetLength(1); ++y){
+                if(chunks[x,y].chunkState == ChunkState.NotGenerated){
+                    GenerateChunk(chunks, x, y);
+                    chunks[x,y].chunkState = ChunkState.Generated;
+                }
+            }
+        }
+        int[,] ids = CreateChunksArray(chunks);
+        int[,] savedIds = ids.Clone() as int[,];
+        // for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
+        //     for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
+        //         if(chunks[x,y].chunkState == ChunkState.Generated){
+        //             //WidenChunk(ids, savedIds, x, y);
+        //         }
+        //     }
+        // }
+        // savedIds = ids.Clone() as int[,];
+        for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
+            for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
+                if(chunks[x,y].chunkState == ChunkState.Generated){
+                    SmoothChunk(ids, savedIds, x, y);
+                    chunks[x,y].chunkState = ChunkState.Smoothed;
+                }
+            }
+        }
+        SaveChunksArray(chunks, ids);
+        for(int x = renderedPadding; x < chunks.GetLength(0) - renderedPadding; ++x){
+            for(int y = renderedPadding; y < chunks.GetLength(1) - renderedPadding; ++y){
+                if(chunks[x,y].chunkState == ChunkState.Saved){
+                    MakeChunkSprites(chunks[x,y]);
+                    chunks[x,y].chunkState = ChunkState.Rendered;
+                }
+            }
+        }
+    }
+
+    double PerlinNoise(double x, double y, int id){
+        return generator.perlin((x + seed * id) / (zoom), (y + seed * id) / (zoom), seed / 1000000);
+    }
+
+    void GenerateChunk(Chunk[,] chunks, int xChunk, int yChunk){
+        Chunk chunk = chunks[xChunk, yChunk];
         // Set all values to default in chunk
-        int defaultId = tileTypes[defaultTile];
+        int defaultId = tileManager.defaultTile.id;
         for(int x = 0; x < Chunk.chunkSize; ++x){
             for(int y = 0; y < Chunk.chunkSize; ++y){
                 chunk.grid[x,y] = new Tile(defaultId);
             }
         }
         // Then loop through each tile type except the default one
-        foreach(TileInfo tileInfo in tilesInfo){
-            if(tileInfo.name == defaultTile) continue;
+        int i = 1;
+        foreach(TileInfo tileInfo in terrainTiles){
+            if(tileInfo.id == defaultId) continue;
             for(int x = 0; x < Chunk.chunkSize; ++x){
                 for(int y = 0; y < Chunk.chunkSize; ++y){
                     // Check to see if the priority is already above current tile
-                    if(typeToInfo[chunk.grid[x,y].id].priority > tileInfo.priority) continue;
-                    // Check if we are continuing spawned tile
-                    float seed = Random.value;
-                    if(isContinuation(chunk, x, y, tileInfo.id)){
-                        double rand = Mathf.PerlinNoise((x + chunk.x * Chunk.chunkSize + seed * tileInfo.id) / zoom, 
-                                                        (y + chunk.y * Chunk.chunkSize + seed * tileInfo.id) / zoom);
-                        if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
-                            chunk.grid[x,y].id = tileInfo.id;
-                        } else {
-                            chunk.grid[x,y].id = tileInfo.id;
-                        }
-                    } else {
+                    if(chunk.grid[x,y].id != defaultId) continue;
+                    double rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
+                    // if(isContinuation(chunk, x, y, tileInfo.id)){
+                    //     if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
+                    //         chunk.grid[x,y].id = tileInfo.id;
+                    //     } else {
+                    //         chunk.grid[x,y].id = tileInfo.id;
+                    //     }
+                    // } else {
                         // Otherwise check if perlin noise value is less than the spawn chance of the tile
-                        double rand = Mathf.PerlinNoise((x + chunk.x * Chunk.chunkSize + seed * tileInfo.id) / zoom, 
-                                                        (y + chunk.y * Chunk.chunkSize + seed * tileInfo.id) / zoom);
                         if(rand <= tileInfo.spawnChance){
                             chunk.grid[x, y].id = tileInfo.id;
                         }
-                    }
+                    //}
                 }
             }
+            ++i;
         }
     }
 
-    public void MakeChunkSprites(Chunk[,] chunks, int xChunk, int yChunk){
-        SpriteManager spriteManager = GetComponent<SpriteManager>();
-        spriteManager.Initialize();
-        
-        for(int x = 0; x < Chunk.chunkSize; x++){
-            for(int y = 0; y < Chunk.chunkSize; y++){
-                GameObject sprite = Instantiate(tile, new Vector2(x + chunks[xChunk, yChunk].x * Chunk.chunkSize, 
-                                                (y + chunks[xChunk, yChunk].y * Chunk.chunkSize)), Quaternion.identity);
-                //sprite.transform.SetParent(transform);
-                sprite.transform.localScale = new Vector2(1 / 0.16f, 1 / 0.16f);
-                if(typeToInfo[chunks[xChunk, yChunk].grid[x,y].id].isAnimation){
-                    string name = typeToInfo[chunks[xChunk, yChunk].grid[x,y].id].name;
-                    sprite.GetComponent<TileAnimator>().SetFrames(spriteManager.GetAnimationFrames(GetChunkSprite(chunks, xChunk, yChunk, x, y)),
-                                                                    spriteManager.GetAnimationFrameRate(name));
-                } else {
-                    if(chunks[xChunk, yChunk].grid[x,y].id == 0){
-                        sprite.GetComponent<SpriteRenderer>().sprite = spriteManager.GetAutoTile("grassCenter");
-                    } else {
-                        sprite.GetComponent<SpriteRenderer>().sprite = 
-                            spriteManager.GetAutoTile(GetChunkSprite(chunks, xChunk, yChunk, x, y));
-                    }
-                }
-                chunks[xChunk,yChunk].grid[x,y].tile = sprite;
-            }
-        }
-    }
-
-    string[,] GetAutoTileTypes(Chunk[,] chunks, int xChunk, int yChunk){
-        string[,] autoTileNames = new string[Chunk.chunkSize, Chunk.chunkSize];
+    void WidenChunk(int[,] ids, int[,] savedIds, int xChunk, int yChunk){
+        TerrainBrush terrainBrush = new TerrainBrush(smoothBrushSize);
         for(int x = 0; x < Chunk.chunkSize; ++x){
             for(int y = 0; y < Chunk.chunkSize; ++y){
-                if(!typeToInfo[chunks[xChunk, yChunk].grid[x,y].id].isAnimation){
-                    if(chunks[xChunk, yChunk].grid[x,y].id != tileTypes[defaultTile]) {
-                        //autoTileNames[x,y] = G
-                    }
+                int tileId = savedIds[xChunk * Chunk.chunkSize + x, yChunk * Chunk.chunkSize + y];
+                if(tileId == tileManager.defaultTile.id) continue;
+                foreach(TileInfo tile in terrainTiles){
+                    if(!tile.hasAutoTiles) continue;
+                    if(tileId > tile.id && tileId < tile.id + 15) tileId = tile.id;
                 }
+                ids = terrainBrush.Paint(ids, tileId, xChunk * Chunk.chunkSize + x, yChunk * Chunk.chunkSize + y, xChunk, yChunk);
             }
         }
-        return null;
     }
-    
 
-    // Gets the local direction of the tile in relation to the surrounding tiles
-    string GetChunkSprite(Chunk[,] chunks, int xChunk, int yChunk, int x, int y){
-        int type1 = chunks[xChunk, yChunk].grid[x, y].id;
-        int type2 = tileTypes[defaultTile];
-        int type1Count = 0;
-        int[,] filter = new int[3, 3];
-        for(int dx = -1; dx < 2; dx++){
-            for(int dy = -1; dy < 2; dy++){
-                if(!isInChunk(x + dx, y + dy)) {
-                    int cx = xChunk;
-                    int cy = yChunk;
-                    int nx = x + dx;
-                    int ny = y + dy;
-                    if(!isInChunk(x + dx, y)) {
-                        nx = (dx < 0 ? Chunk.chunkSize - 1 : 0);
-                        cx = xChunk + dx;
+    void SmoothChunk(int[,] ids, int[,] savedIds, int xChunk, int yChunk){
+        TerrainBrush terrainBrush = new TerrainBrush(smoothBrushSize);
+        for(int x = 0; x < Chunk.chunkSize; ++x){
+            for(int y = 0; y < Chunk.chunkSize; ++y){
+                SmoothTile(ids, savedIds, x + xChunk * Chunk.chunkSize, y + yChunk * Chunk.chunkSize);
+            }
+        }
+    }
+
+    void SmoothTile(int[,] ids, int[,] savedIds, int x, int y){
+        int tileId = savedIds[x, y];
+        if(tileId == tileManager.defaultTile.id) return;
+        int dir = terrainBrush.Smooth(ids, tileManager.defaultTile.id, x, y);
+        if(dir == (int) TerrainBrush.TileType.Error){
+            ids[x,y] = tileManager.defaultTile.id;
+            for(int xd = -1; xd < 2; ++xd){
+                for(int yd = -1; yd < 2; ++yd){
+                    if(ids[x + xd, y + yd] != tileManager.defaultTile.id){
+                        SmoothTile(ids, savedIds, x + xd, y + yd);
                     }
-                    if(!isInChunk(x, y + dy)) {
-                        ny = (dy < 0 ? Chunk.chunkSize - 1 : 0);
-                        cy = yChunk + dy;
-                    }
-                    filter[dx + 1, dy + 1] = chunks[cx,cy].grid[nx, ny].id;
-                    if(filter[dx + 1, dy + 1] == type1) ++type1Count;
-                    continue;
                 }
-                if(chunks[xChunk,yChunk].grid[x + dx,y + dy].id == type1) ++type1Count;
-                filter[dx + 1, dy + 1] = chunks[xChunk,yChunk].grid[x + dx,y + dy].id;
             }
+        } else {
+            ids[x,y] = tileId + dir;
         }
-        // These are all cases where the center tile is jutting out
-        if(type1Count == 1 || type1Count == 2 || type1Count == 3) return typeToInfo[type2].name + "Center";
-        if(type1Count == 4) {
-            // Check if the tiles form a square in a corner
-            if((filter[0,1] == type1 && (filter[1, 2] == type1 || filter[1, 0] == type1)) ||
-                (filter[2, 1] == type1 && (filter[1, 2] == type1 || filter[1, 0] == type1))){
-                    string result = typeToInfo[type1].name;
-                    if(filter[0,1] == type1 && filter[0,0] == type1 && filter[1,0] == type1) result += "BottomLeft";
-                    else if(filter[0,1] == type1 && filter[0,2] == type1 && filter[1,2] == type1) result += "TopLeft";
-                    else if(filter[2,1] == type1 && filter[2,0] == type1 && filter[1,0] == type1) result += "BottomRight";
-                    else if(filter[2,1] == type1 && filter[2,2] == type1 && filter[1,2] == type1) result += "TopRight";
-                    return result;
-            }
-            // All other cases have middle block on its own and shoulld be turned to grass
-            return typeToInfo[type2].name + "Center";
-        }
-        if(type1Count == 5 || type1Count == 6 || type1Count == 7){
-            string result = typeToInfo[type1].name;
-            if(filter[0,1] == type1 && filter[0,0] == type1 && filter[1,0] == type1) result += "BottomLeft";
-            if(filter[0,1] == type1 && filter[0,2] == type1 && filter[1,2] == type1) result += "TopLeft";
-            if(filter[2,1] == type1 && filter[2,0] == type1 && filter[1,0] == type1) result += "BottomRight";
-            if(filter[2,1] == type1 && filter[2,2] == type1 && filter[1,2] == type1) result += "TopRight";
-            if(result == typeToInfo[type1].name) return typeToInfo[type2].name + "Center";
-            if(result.Split(new string[] {"Top"}, System.StringSplitOptions.None).Length > 2) return typeToInfo[type1].name + "Top";
-            if(result.Split(new string[] {"Left"}, System.StringSplitOptions.None).Length > 2) return typeToInfo[type1].name + "Left";
-            if(result.Split(new string[] {"Right"}, System.StringSplitOptions.None).Length > 2) return typeToInfo[type1].name + "Right";
-            if(result.Split(new string[] {"Bottom"}, System.StringSplitOptions.None).Length > 2) return typeToInfo[type1].name + "Bottom";
-            if(result.Contains("Top") && result.Contains("Bottom")){
-                if(result.IndexOf("Top") < result.IndexOf("Bottom")){
-                    return typeToInfo[type1].name + "RightDiagonal";
+    }
+
+    void MakeChunkSprites(Chunk chunk){
+        for(int x = 0; x < Chunk.chunkSize; ++x){
+            for(int y = 0; y < Chunk.chunkSize; ++y){
+                TileInfo tile = tileManager.GetTile(chunk.grid[x,y].id);
+                GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
+                                                (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
+                //sprite.transform.SetParent(transform);
+                sprite.transform.localScale = new Vector2(1 / 0.16f, 1 / 0.16f);
+                if(tile.isAnimation){
+                    sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
                 } else {
-                    return typeToInfo[type1].name + "LeftDiagonal";
+                    sprite.GetComponent<SpriteRenderer>().sprite = tileManager.GetSprite(tile.id);
                 }
+                chunk.grid[x,y].tile = sprite;
             }
-            return result;
         }
-        if(type1Count == 8){
-            string result = typeToInfo[type1].name;
-            if(filter[0,0] == type2) result += "TopRightL";
-            else if(filter[1,0] == type2) result += "Top";
-            else if(filter[2,0] == type2) result += "TopLeftL";
-            else if(filter[0,1] == type2) result += "Right";
-            else if(filter[2,1] == type2) result += "Left";
-            else if(filter[0,2] == type2) result += "BottomRightL";
-            else if(filter[1,2] == type2) result += "Bottom";
-            else result += "BottomLeftL";
-            return result;
-        }
-        return typeToInfo[type1].name + "Center";
     }
 }

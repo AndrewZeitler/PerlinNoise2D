@@ -16,6 +16,7 @@ public struct EditorTile
     }
 
     public string tileName;
+    [System.Obsolete("ID is not assigned to.")]
     public int id;
     public int amount;
     public bool isAnimation;
@@ -32,9 +33,15 @@ public struct EditorTile
 [System.Serializable]
 public class TileManager : MonoBehaviour
 {
+    public SpriteManager spriteManager;
+    public string defaultTileName;
+    [HideInInspector]
+    public TileInfo defaultTile;
+    public GameObject tilePrefab;
     [HideInInspector]
     public List<EditorTile> editorTiles;
-    private List<TileInfo> tiles;
+    [HideInInspector]
+    public List<TileInfo> tiles;
     private Dictionary<string, TileInfo> nameToTile;
 
     private void Start() {
@@ -54,18 +61,24 @@ public class TileManager : MonoBehaviour
             }
         }
         foreach(TileInfo tile in tiles){
+            tile.sprites = spriteManager.GetSprites(tile);
             nameToTile.Add(tile.tileName, tile);
         }
+        defaultTile = nameToTile[defaultTileName];
     }
 
-    TileInfo GetTile(int id){
+    public TileInfo GetTile(int id){
         if(id < 0 || id >= tiles.Count) return null;
         return tiles[id];
     }
 
-    TileInfo GetTile(string name){
+    public TileInfo GetTile(string name){
         if(!nameToTile.ContainsKey(name)) return null;
         return nameToTile[name];
+    }
+
+    public Sprite GetSprite(int id){
+        return tiles[id].sprites[Random.Range(0, tiles[id].amount - 1)];
     }
 }
 
@@ -78,7 +91,6 @@ public class TileManager : MonoBehaviour
      List<bool> showTiles;
     string[] stringTypes = {"Center", "Top", "Right", "Bottom", "Left", "TopLeft", "TopRight", "BottomLeft", "BottomRight", 
                             "TopLeftL", "TopRightL", "BottomLeftL", "BottomRightL", "LeftDiagonal", "RightDiagonal"};
-    bool showAutoTiles = false;
     TileManager manager;
 
     void OnEnable()
@@ -127,7 +139,7 @@ public class TileManager : MonoBehaviour
                 if(script.generateAutoTiles){
                     if(script.autoTiles == null) script.autoTiles = new EditorTile.AutoTile[stringTypes.Length];
                     for(int j = 0; j < stringTypes.Length; ++j){
-                        script.autoTiles[j].tileName = script.tileName + stringTypes[i];
+                        script.autoTiles[j].tileName = script.tileName + stringTypes[j];
                     }
                     // showAutoTiles = EditorGUILayout.Foldout(showAutoTiles, "Auto Tiles");
                     // if(showAutoTiles){
