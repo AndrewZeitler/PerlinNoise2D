@@ -12,15 +12,13 @@ public class WorldGenerator : MonoBehaviour
     public int renderedPadding;
     public int smoothBrushSize;
     PerlinNoiseGenerator generator;
-    TerrainBrush terrainBrush;
 
     void Start()
     {
         generator = new PerlinNoiseGenerator();
         seed = System.Environment.TickCount / 10;
-        //seed = 17438364;
+        seed = 100378114;
         Debug.Log("Seed: " + seed);
-        terrainBrush = new TerrainBrush(smoothBrushSize);
 
         terrainTiles = new List<TileInfo>();
         foreach(TileInfo tile in tileManager.tiles){
@@ -109,16 +107,15 @@ public class WorldGenerator : MonoBehaviour
                 }
             }
         }
+        for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
+            for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
+                if(chunks[x,y].chunkState == ChunkState.Generated){
+                    //WidenChunk(chunks, x, y);
+                }
+            }
+        }
         int[,] ids = CreateChunksArray(chunks);
         int[,] savedIds = ids.Clone() as int[,];
-        // for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
-        //     for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
-        //         if(chunks[x,y].chunkState == ChunkState.Generated){
-        //             //WidenChunk(ids, savedIds, x, y);
-        //         }
-        //     }
-        // }
-        // savedIds = ids.Clone() as int[,];
         for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
             for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
                 if(chunks[x,y].chunkState == ChunkState.Generated){
@@ -152,28 +149,58 @@ public class WorldGenerator : MonoBehaviour
                 for(int y = 0; y < Chunk.chunkSize; ++y){
                     // Check to see if the priority is already above current tile
                     if(chunk.grid[x,y].id != tileManager.defaultTile.id) continue;
-                    if(NeighbourIsAnimation(chunks, xChunk, yChunk, x, y, tileInfo.id)) continue;
+                    //if(NeighbourIsAnimation(chunks, xChunk, yChunk, x, y, tileInfo.id)) continue;
                     double rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
-                    if(isContinuation(chunks, xChunk, yChunk, x, y, tileInfo.id)){
-                        if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
-                            chunk.grid[x,y].id = tileInfo.id;
-                        } else {
-                            chunk.grid[x,y].id = tileManager.defaultTile.id;
-                        }
-                    } else {
-                        // Otherwise check if perlin noise value is less than the spawn chance of the tile
+                    // if(isContinuation(chunks, xChunk, yChunk, x, y, tileInfo.id)){
+                    //     if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
+                    //         chunk.grid[x,y].id = tileInfo.id;
+                    //     } else {
+                    //         chunk.grid[x,y].id = tileManager.defaultTile.id;
+                    //     }
+                    // } else {
+                    //     // Otherwise check if perlin noise value is less than the spawn chance of the tile
                         if(rand <= tileInfo.spawnChance){
                             chunk.grid[x, y].id = tileInfo.id;
+                            chunk.rawIds[x, y] = tileInfo.id;
                         }
-                    }
+                    // }
                 }
             }
             ++i;
         }
     }
 
+    void WidenChunk(Chunk[,] chunks, int xChunk, int yChunk){
+        foreach(TileInfo tile in terrainTiles){
+            if(tile.id == tileManager.defaultTile.id) continue;
+            int[,] ids = new int[Chunk.chunkSize * 3, Chunk.chunkSize * 3];
+            TerrainBrush terrainBrush = new TerrainBrush(tile.brushSize);
+            for(int xd = -1; xd < 2; ++xd){
+                for(int yd = -1; yd < 2; ++yd){
+                    for(int x = 0; x < Chunk.chunkSize; ++x){
+                        for(int y = 0; y < Chunk.chunkSize; ++y){
+                            ids[(xd + 1) * Chunk.chunkSize + x, (yd + 1) * Chunk.chunkSize] = chunks[xChunk + xd, yChunk + yd].rawIds[x,y];
+                        }
+                    }
+                }
+            }
+            for(int x = 0; x < Chunk.chunkSize * 3; ++x){
+                for(int y = 0; y < Chunk.chunkSize * 3; ++y){
+                    if(ids[x,y] == tile.id){
+                        terrainBrush.Paint(ids, tile.id, x, y);
+                    }
+                }
+            }
+            for(int x = 0; x < Chunk.chunkSize; ++x){
+                for(int y = 0; y < Chunk.chunkSize; ++y){
+                    if(ids[x + Chunk.chunkSize, y + Chunk.chunkSize] != tileManager.defaultTile.id) Debug.Log("hmmm");
+                    chunks[xChunk, yChunk].grid[x, y].id = ids[x + Chunk.chunkSize, y + Chunk.chunkSize];
+                }
+            }
+        }
+    }
+
     void SmoothChunk(int[,] ids, int[,] savedIds, int xChunk, int yChunk){
-        TerrainBrush terrainBrush = new TerrainBrush(smoothBrushSize);
         for(int x = 0; x < Chunk.chunkSize; ++x){
             for(int y = 0; y < Chunk.chunkSize; ++y){
                 SmoothTile(ids, savedIds, x + xChunk * Chunk.chunkSize, y + yChunk * Chunk.chunkSize);
@@ -184,7 +211,7 @@ public class WorldGenerator : MonoBehaviour
     void SmoothTile(int[,] ids, int[,] savedIds, int x, int y){
         int tileId = savedIds[x, y];
         if(tileId == tileManager.defaultTile.id) return;
-        int dir = terrainBrush.Smooth(ids, tileManager.defaultTile.id, x, y);
+        int dir = TerrainBrush.Smooth(ids, tileManager.defaultTile.id, x, y);
         if(dir == (int) TerrainBrush.TileType.Error){
             ids[x,y] = tileManager.defaultTile.id;
             for(int xd = -1; xd < 2; ++xd){

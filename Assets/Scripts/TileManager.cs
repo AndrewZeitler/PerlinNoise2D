@@ -24,7 +24,7 @@ public struct EditorTile
     public float frameRate;
     public bool isTerrain;
     public float spawnChance;
-    public float continuationBias;
+    public int brushSize;
     public int priority;
     public bool generateAutoTiles;
     public AutoTile[] autoTiles;
@@ -132,7 +132,7 @@ public class TileManager : MonoBehaviour
             script.isTerrain = EditorGUILayout.Toggle("Is Terrain", script.isTerrain);
             if (script.isTerrain) {
                 script.spawnChance = EditorGUILayout.FloatField("spawnChance", script.spawnChance);
-                script.continuationBias = EditorGUILayout.FloatField("Continuation Bias", script.continuationBias);
+                script.brushSize = EditorGUILayout.IntField("Brush Size", script.brushSize);
                 script.priority = EditorGUILayout.IntField("Priority", script.priority);
                 script.generateAutoTiles = EditorGUILayout.Toggle("Generate Auto Tiles?", script.generateAutoTiles);
 

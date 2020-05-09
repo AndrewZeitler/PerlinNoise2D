@@ -9,7 +9,7 @@ public class TileInfo {
     public float frameRate;
     public bool isTerrain;
     public float spawnChance;
-    public float continuationBias;
+    public int brushSize;
     public int priority;
     public bool hasAutoTiles;
     public Sprite[] sprites;
@@ -23,7 +23,7 @@ public class TileInfo {
         frameRate = et.frameRate;
         isTerrain = et.isTerrain;
         spawnChance = et.spawnChance;
-        continuationBias = et.continuationBias;
+        brushSize = et.brushSize;
         priority = et.priority;
         hasAutoTiles = et.generateAutoTiles;
     }
@@ -42,7 +42,7 @@ public class TileInfo {
         animationFrames = et.animationFrames;
         frameRate = et.frameRate;
         spawnChance = et.spawnChance;
-        continuationBias = et.continuationBias;
+        brushSize = et.brushSize;
         priority = et.priority;
         hasAutoTiles = et.generateAutoTiles;
     }

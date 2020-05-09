@@ -47,11 +47,22 @@ public class TerrainBrush {
         }
     }
 
-    public int Smooth(int[,] ids, int currId, int x, int y){
+    public void Paint(int[,] ids, int currId, int x, int y){
+        for(int xd = -size / 2; xd < size / 2 + 1; ++xd){
+            for(int yd = -size / 2; yd < size / 2 + 1; ++yd){
+                if(xd * xd + yd * yd < size * size) {
+                    if(x + xd < 0 || x + xd >= ids.GetLength(0) || y + yd < 0 || y + yd >= ids.GetLength(1)) continue;
+                    ids[x + xd, y + yd] = currId;
+                }
+            }
+        }
+    }
+
+    public static int Smooth(int[,] ids, int currId, int x, int y){
         return (int) GetTileType(ids, currId, x, y);
     }
 
-    TileType GetTileType(int[,] ids, int currId, int x, int y){
+    static TileType GetTileType(int[,] ids, int currId, int x, int y){
         if(ids[x, y - 1] == currId && ids[x, y + 1] == currId) return TileType.Error;
         if(ids[x - 1, y] == currId && ids[x + 1, y] == currId) return TileType.Error;
         if(ids[x, y - 1] == currId){
