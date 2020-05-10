@@ -7,14 +7,17 @@ public class CameraController : MonoBehaviour
     public float speed = 1.0f;
     public float fastSpeed = 1.0f;
     public float scrollSpeed = 1.0f;
-    // Start is called before the first frame update
+    public GameObject player;
+    private bool isFollowingPlayer;
+
     private Camera cam;
+    
     void Start()
     {
         cam = GetComponent<Camera>();
+        if(player != null) isFollowingPlayer = true;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         float camSpeed = speed;
@@ -24,6 +27,7 @@ public class CameraController : MonoBehaviour
         xTranslation *= Time.deltaTime;
         yTranslation *= Time.deltaTime;
         float scroll = Input.mouseScrollDelta.y;
+        if(Input.GetAxisRaw("Tab") > 0 && player != null) isFollowingPlayer = !isFollowingPlayer;
         if(scroll != 0f){
             if(scroll > 0f){
                 cam.orthographicSize += scrollSpeed;
@@ -31,7 +35,12 @@ public class CameraController : MonoBehaviour
                 cam.orthographicSize -= scrollSpeed;
             }
         }
-
-        transform.Translate(xTranslation, yTranslation, 0);
+        if(!isFollowingPlayer){
+            transform.Translate(xTranslation, yTranslation, 0);
+        } else {
+            xTranslation = player.transform.position.x - cam.transform.position.x;
+            yTranslation = player.transform.position.y - cam.transform.position.y;
+            transform.Translate(xTranslation, yTranslation, 0);
+        }
     }
 }

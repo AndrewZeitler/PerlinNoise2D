@@ -101,8 +101,8 @@ public class WorldGenerator : MonoBehaviour
                 if(chunks[x,y].chunkState == ChunkState.NotGenerated){
                     for(int xc = 0; xc < Chunk.chunkSize; ++xc){
                         for(int yc = 0; yc < Chunk.chunkSize; ++yc){
-                            chunks[x,y].terrain[xc,yc] = new Tile(tileManager.defaultTile.id);
-                            chunks[x,y].tiles[xc,yc] = new Tile(-1);
+                            chunks[x,y].terrain[xc,yc] = new Tile(tileManager.defaultTile.id, true);
+                            chunks[x,y].tiles[xc,yc] = new Tile(-1, true);
                         }
                     }
                 }
@@ -164,13 +164,16 @@ public class WorldGenerator : MonoBehaviour
                     if(isContinuation(chunks, xChunk, yChunk, x, y, tileInfo.id)){
                         if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
                             chunk.terrain[x,y].id = tileInfo.id;
+                            chunk.terrain[x,y].isWalkable = tileInfo.isWalkable;
                         } else {
                             chunk.terrain[x,y].id = tileManager.defaultTile.id;
+                            chunk.terrain[x,y].isWalkable = tileManager.defaultTile.isWalkable;
                         }
                     } else {
                         // Otherwise check if perlin noise value is less than the spawn chance of the tile
                         if(rand <= tileInfo.spawnChance){
-                            chunk.terrain[x, y].id = tileInfo.id;
+                            chunk.terrain[x,y].id = tileInfo.id;
+                            chunk.terrain[x,y].isWalkable = tileInfo.isWalkable;
                         }
                     }
                 }
@@ -190,10 +193,12 @@ public class WorldGenerator : MonoBehaviour
                     double rand = Random.value;
                     if(rand < tileInfo.singleResourceChance){
                         chunk.tiles[x,y].id = tileInfo.id;
+                        chunk.tiles[x,y].isWalkable = tileInfo.isWalkable;
                     } else {
                         rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
                         if(rand < tileInfo.veinChance){
                             chunk.tiles[x,y].id = tileInfo.id;
+                            chunk.tiles[x,y].isWalkable = tileInfo.isWalkable;
                         }
                     }
                 }
@@ -234,16 +239,19 @@ public class WorldGenerator : MonoBehaviour
                 TileInfo tile = tileManager.GetTile(chunk.terrain[x,y].id);
                 GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
                                                 (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
-                //sprite.transform.SetParent(transform);
-                sprite.transform.localScale = new Vector2(1 / 0.16f, 1 / 0.16f);
+                SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
                 if(tile.isAnimation){
                     sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
+                    spriteRenderer.sprite = tile.sprites[0];
                 } else {
-                    SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
                     spriteRenderer.sortingLayerName = "Terrain";
                     spriteRenderer.sprite = tileManager.GetSprite(tile.id);
                 }
+                if(!tile.isWalkable) sprite.AddComponent<PolygonCollider2D>();
                 chunk.terrain[x,y].tile = sprite;
+                // if(tile.isAnimation){
+                //     spriteRenderer.enabled = false;
+                // }
             }
         }
     }
@@ -256,17 +264,21 @@ public class WorldGenerator : MonoBehaviour
                 TileInfo tile = tileManager.GetTile(chunk.tiles[x,y].id);
                 GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
                                                 (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
-                sprite.transform.localScale = new Vector2(1 / 0.16f, 1 / 0.16f);
+                SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
                 if(tile.isAnimation){
                     sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
+                    spriteRenderer.sprite = tile.sprites[0];
                 } else {
-                    SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
                     spriteRenderer.sortingLayerName = "Tiles";
                     short order = (short)(-y - chunk.y * Chunk.chunkSize); // WILL WRAP AROUND EVENTUALLY
                     spriteRenderer.sortingOrder = order;
                     spriteRenderer.sprite = tileManager.GetSprite(tile.id);
                 }
+                if(!tile.isWalkable) sprite.AddComponent<PolygonCollider2D>();
                 chunk.tiles[x,y].tile = sprite;
+                // if(tile.isAnimation){
+                //     spriteRenderer.enabled = false;
+                // }
             }
         }
     }

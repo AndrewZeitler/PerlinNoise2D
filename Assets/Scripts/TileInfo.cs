@@ -4,6 +4,7 @@ public class TileInfo {
     public string tileName;
     public int id;
     public int amount;
+    public bool isWalkable;
     public bool isAnimation;
     public int animationFrames;
     public float frameRate;
@@ -23,6 +24,7 @@ public class TileInfo {
         tileName = et.tileName;
         this.id = id;
         amount = et.amount;
+        isWalkable = et.isWalkable;
         isAnimation = et.isAnimation;
         animationFrames = et.animationFrames;
         frameRate = et.frameRate;
@@ -48,6 +50,7 @@ public class TileInfo {
             amount = 1;
             isTerrain = false;
         }
+        isWalkable = et.isWalkable;
         isAnimation = et.isAnimation;
         animationFrames = et.animationFrames;
         frameRate = et.frameRate;

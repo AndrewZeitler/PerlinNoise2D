@@ -19,6 +19,7 @@ public struct EditorTile
     [System.Obsolete("ID is not assigned to.")]
     public int id;
     public int amount;
+    public bool isWalkable;
     public bool isAnimation;
     public int animationFrames;
     public float frameRate;
@@ -127,6 +128,7 @@ public class TileManager : MonoBehaviour
             script.tileName = EditorGUILayout.TextField("Tile Name", script.tileName);
             //script.id = EditorGUILayout.IntField("ID", script.id);
             script.amount = EditorGUILayout.IntField("Amount", script.amount);
+            script.isWalkable = EditorGUILayout.Toggle("Is Walkable", script.isWalkable);
             script.isAnimation = EditorGUILayout.Toggle("Is Animation", script.isAnimation);
             if (script.isAnimation) {
                 script.animationFrames = EditorGUILayout.IntField("Animation Frames", script.animationFrames);
