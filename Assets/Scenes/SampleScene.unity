@@ -403,6 +403,11 @@ MonoBehaviour:
       id: 0
     - tileName: grassRightDiagonal
       id: 0
+    isResource: 0
+    singleResourceChance: 0
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: 
   - tileName: dirt
     id: 0
     amount: 1
@@ -410,8 +415,8 @@ MonoBehaviour:
     animationFrames: 0
     frameRate: 0
     isTerrain: 1
-    spawnChance: 0.3
-    continuationBias: 0.2
+    spawnChance: 0.45
+    continuationBias: 0
     priority: 1
     generateAutoTiles: 1
     autoTiles:
@@ -445,6 +450,11 @@ MonoBehaviour:
       id: 0
     - tileName: dirtRightDiagonal
       id: 0
+    isResource: 0
+    singleResourceChance: 0
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: 
   - tileName: stone
     id: 0
     amount: 1
@@ -452,7 +462,7 @@ MonoBehaviour:
     animationFrames: 0
     frameRate: 0
     isTerrain: 1
-    spawnChance: 0.1
+    spawnChance: 0.2
     continuationBias: 0.1
     priority: 2
     generateAutoTiles: 1
@@ -487,6 +497,11 @@ MonoBehaviour:
       id: 0
     - tileName: stoneRightDiagonal
       id: 0
+    isResource: 0
+    singleResourceChance: 0
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: 
   - tileName: water
     id: 0
     amount: 1
@@ -494,8 +509,8 @@ MonoBehaviour:
     animationFrames: 3
     frameRate: 0.3
     isTerrain: 1
-    spawnChance: 0.05
-    continuationBias: 0.8
+    spawnChance: 0.15
+    continuationBias: 0.45
     priority: 4
     generateAutoTiles: 1
     autoTiles:
@@ -529,6 +544,79 @@ MonoBehaviour:
       id: 0
     - tileName: waterRightDiagonal
       id: 0
+    isResource: 0
+    singleResourceChance: 0
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: 
+  - tileName: tree
+    id: 0
+    amount: 3
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 0
+    spawnChance: 0
+    continuationBias: 0
+    priority: 0
+    generateAutoTiles: 0
+    autoTiles: []
+    isResource: 1
+    singleResourceChance: 0.025
+    veinChance: 0.26
+    veinContinuationBias: 0
+    resourceSpawnTile: grass
+  - tileName: dirtRock
+    id: 0
+    amount: 7
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 0
+    spawnChance: 0
+    continuationBias: 0
+    priority: 0
+    generateAutoTiles: 0
+    autoTiles: []
+    isResource: 1
+    singleResourceChance: 0.03
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: dirtCenter
+  - tileName: stoneRock
+    id: 0
+    amount: 7
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 0
+    spawnChance: 0
+    continuationBias: 0
+    priority: 0
+    generateAutoTiles: 0
+    autoTiles: []
+    isResource: 1
+    singleResourceChance: 0.03
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: stoneCenter
+  - tileName: lilypad
+    id: 0
+    amount: 4
+    isAnimation: 0
+    animationFrames: 0
+    frameRate: 0
+    isTerrain: 0
+    spawnChance: 0
+    continuationBias: 0
+    priority: 0
+    generateAutoTiles: 0
+    autoTiles: []
+    isResource: 1
+    singleResourceChance: 0.03
+    veinChance: 0
+    veinContinuationBias: 0
+    resourceSpawnTile: waterCenter
 --- !u!1 &2104531808
 GameObject:
   m_ObjectHideFlags: 0

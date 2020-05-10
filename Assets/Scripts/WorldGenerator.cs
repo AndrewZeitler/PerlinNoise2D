@@ -8,6 +8,7 @@ public class WorldGenerator : MonoBehaviour
     public double zoom = 16;
     int seed;
     List<TileInfo> terrainTiles;
+    List<TileInfo> resourceTiles;
     public int smoothPadding;
     public int renderedPadding;
     public int smoothBrushSize;
@@ -18,17 +19,22 @@ public class WorldGenerator : MonoBehaviour
     {
         generator = new PerlinNoiseGenerator();
         seed = System.Environment.TickCount / 10;
-        //seed = 17438364;
         Debug.Log("Seed: " + seed);
+        Random.InitState(seed);
         terrainBrush = new TerrainBrush(smoothBrushSize);
 
         terrainTiles = new List<TileInfo>();
+        resourceTiles = new List<TileInfo>();
         foreach(TileInfo tile in tileManager.tiles){
             if(tile.isTerrain){
                 terrainTiles.Add(tile);
             }
+            if(tile.isResource){
+                resourceTiles.Add(tile);
+            }
         }
         terrainTiles.Sort(TileInfo.ComparePriority);
+        resourceTiles.Sort(TileInfo.ComparePriority);
     }
 
     bool isContinuation(Chunk[,] chunks, int xChunk, int yChunk, int x, int y, int id){
@@ -57,7 +63,7 @@ public class WorldGenerator : MonoBehaviour
             for(int y = 0; y < chunks.GetLength(1); ++y){
                 for(int xc = 0; xc < Chunk.chunkSize; ++xc){
                     for(int yc = 0; yc < Chunk.chunkSize; ++yc){
-                        ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc] = chunks[x,y].grid[xc,yc].id;
+                        ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc] = chunks[x,y].terrain[xc,yc].id;
                     }
                 }
             }
@@ -71,7 +77,7 @@ public class WorldGenerator : MonoBehaviour
                 if(chunks[x,y].chunkState != ChunkState.Smoothed) continue;
                 for(int xc = 0; xc < Chunk.chunkSize; ++xc){
                     for(int yc = 0; yc < Chunk.chunkSize; ++yc){
-                        chunks[x,y].grid[xc,yc].id = ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc];
+                        chunks[x,y].terrain[xc,yc].id = ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc];
                     }
                 }
                 chunks[x,y].chunkState = ChunkState.Saved;
@@ -86,7 +92,7 @@ public class WorldGenerator : MonoBehaviour
         int yc = y % Chunk.chunkSize;
         if(xc < 0 || yc < 0) return -1;
         if(xChunk >= chunks.GetLength(0) || yChunk >= chunks.GetLength(1)) return -1;
-        return chunks[xChunk, yChunk].grid[xc, yc].id;
+        return chunks[xChunk, yChunk].terrain[xc, yc].id;
     }
 
     public void LoadChunks(Chunk[,] chunks){
@@ -95,7 +101,8 @@ public class WorldGenerator : MonoBehaviour
                 if(chunks[x,y].chunkState == ChunkState.NotGenerated){
                     for(int xc = 0; xc < Chunk.chunkSize; ++xc){
                         for(int yc = 0; yc < Chunk.chunkSize; ++yc){
-                            chunks[x,y].grid[xc,yc] = new Tile(tileManager.defaultTile.id);
+                            chunks[x,y].terrain[xc,yc] = new Tile(tileManager.defaultTile.id);
+                            chunks[x,y].tiles[xc,yc] = new Tile(-1);
                         }
                     }
                 }
@@ -104,21 +111,13 @@ public class WorldGenerator : MonoBehaviour
         for(int x = 0; x < chunks.GetLength(0); ++x){
             for(int y = 0; y < chunks.GetLength(1); ++y){
                 if(chunks[x,y].chunkState == ChunkState.NotGenerated){
-                    GenerateChunk(chunks, x, y);
+                    GenerateTerrain(chunks, x, y);
                     chunks[x,y].chunkState = ChunkState.Generated;
                 }
             }
         }
         int[,] ids = CreateChunksArray(chunks);
         int[,] savedIds = ids.Clone() as int[,];
-        // for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
-        //     for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
-        //         if(chunks[x,y].chunkState == ChunkState.Generated){
-        //             //WidenChunk(ids, savedIds, x, y);
-        //         }
-        //     }
-        // }
-        // savedIds = ids.Clone() as int[,];
         for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
             for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
                 if(chunks[x,y].chunkState == ChunkState.Generated){
@@ -128,10 +127,18 @@ public class WorldGenerator : MonoBehaviour
             }
         }
         SaveChunksArray(chunks, ids);
+        for(int x = 0; x < chunks.GetLength(0); ++x){
+            for(int y = 0; y < chunks.GetLength(1); ++y){
+                if(chunks[x,y].chunkState == ChunkState.Saved){
+                    GenerateResources(chunks[x,y]);
+                }
+            }
+        }
         for(int x = renderedPadding; x < chunks.GetLength(0) - renderedPadding; ++x){
             for(int y = renderedPadding; y < chunks.GetLength(1) - renderedPadding; ++y){
                 if(chunks[x,y].chunkState == ChunkState.Saved){
-                    MakeChunkSprites(chunks[x,y]);
+                    MakeTerrainSprites(chunks[x,y]);
+                    MakeResourceSprites(chunks, x, y);
                     chunks[x,y].chunkState = ChunkState.Rendered;
                 }
             }
@@ -142,7 +149,7 @@ public class WorldGenerator : MonoBehaviour
         return generator.perlin((x + seed * id) / (zoom), (y + seed * id) / (zoom), seed / 10000000);
     }
 
-    void GenerateChunk(Chunk[,] chunks, int xChunk, int yChunk){
+    void GenerateTerrain(Chunk[,] chunks, int xChunk, int yChunk){
         Chunk chunk = chunks[xChunk, yChunk];
         // Then loop through each tile type except the default one
         int i = 1;
@@ -151,24 +158,46 @@ public class WorldGenerator : MonoBehaviour
             for(int x = 0; x < Chunk.chunkSize; ++x){
                 for(int y = 0; y < Chunk.chunkSize; ++y){
                     // Check to see if the priority is already above current tile
-                    if(chunk.grid[x,y].id != tileManager.defaultTile.id) continue;
+                    if(chunk.terrain[x,y].id != tileManager.defaultTile.id) continue;
                     if(NeighbourIsAnimation(chunks, xChunk, yChunk, x, y, tileInfo.id)) continue;
                     double rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
                     if(isContinuation(chunks, xChunk, yChunk, x, y, tileInfo.id)){
                         if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
-                            chunk.grid[x,y].id = tileInfo.id;
+                            chunk.terrain[x,y].id = tileInfo.id;
                         } else {
-                            chunk.grid[x,y].id = tileManager.defaultTile.id;
+                            chunk.terrain[x,y].id = tileManager.defaultTile.id;
                         }
                     } else {
                         // Otherwise check if perlin noise value is less than the spawn chance of the tile
                         if(rand <= tileInfo.spawnChance){
-                            chunk.grid[x, y].id = tileInfo.id;
+                            chunk.terrain[x, y].id = tileInfo.id;
                         }
                     }
                 }
             }
             ++i;
+        }
+    }
+
+    void GenerateResources(Chunk chunk){
+        int i = terrainTiles.Count;
+        foreach(TileInfo tileInfo in resourceTiles){
+            int spawnTile = tileManager.GetTile(tileInfo.resourceSpawnTile).id;
+            for(int x = 0; x < Chunk.chunkSize; ++x){
+                for(int y = 0; y < Chunk.chunkSize; ++y){
+                    if(chunk.terrain[x, y].id != spawnTile) continue;
+                    if(chunk.tiles[x,y].id != -1) continue;
+                    double rand = Random.value;
+                    if(rand < tileInfo.singleResourceChance){
+                        chunk.tiles[x,y].id = tileInfo.id;
+                    } else {
+                        rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
+                        if(rand < tileInfo.veinChance){
+                            chunk.tiles[x,y].id = tileInfo.id;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -199,10 +228,10 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    void MakeChunkSprites(Chunk chunk){
+    void MakeTerrainSprites(Chunk chunk){
         for(int x = 0; x < Chunk.chunkSize; ++x){
             for(int y = 0; y < Chunk.chunkSize; ++y){
-                TileInfo tile = tileManager.GetTile(chunk.grid[x,y].id);
+                TileInfo tile = tileManager.GetTile(chunk.terrain[x,y].id);
                 GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
                                                 (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
                 //sprite.transform.SetParent(transform);
@@ -210,9 +239,34 @@ public class WorldGenerator : MonoBehaviour
                 if(tile.isAnimation){
                     sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
                 } else {
-                    sprite.GetComponent<SpriteRenderer>().sprite = tileManager.GetSprite(tile.id);
+                    SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sortingLayerName = "Terrain";
+                    spriteRenderer.sprite = tileManager.GetSprite(tile.id);
                 }
-                chunk.grid[x,y].tile = sprite;
+                chunk.terrain[x,y].tile = sprite;
+            }
+        }
+    }
+
+    void MakeResourceSprites(Chunk[,] chunks, int xChunk, int yChunk){
+        Chunk chunk = chunks[xChunk, yChunk];
+        for(int y = Chunk.chunkSize - 1; y >= 0; --y){
+            for(int x = 0; x < Chunk.chunkSize; ++x){
+                if(chunk.tiles[x,y].id == -1) continue;
+                TileInfo tile = tileManager.GetTile(chunk.tiles[x,y].id);
+                GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
+                                                (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
+                sprite.transform.localScale = new Vector2(1 / 0.16f, 1 / 0.16f);
+                if(tile.isAnimation){
+                    sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
+                } else {
+                    SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sortingLayerName = "Tiles";
+                    short order = (short)(-y - chunk.y * Chunk.chunkSize); // WILL WRAP AROUND EVENTUALLY
+                    spriteRenderer.sortingOrder = order;
+                    spriteRenderer.sprite = tileManager.GetSprite(tile.id);
+                }
+                chunk.tiles[x,y].tile = sprite;
             }
         }
     }

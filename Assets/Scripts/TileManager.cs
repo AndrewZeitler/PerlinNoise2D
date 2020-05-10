@@ -28,6 +28,11 @@ public struct EditorTile
     public int priority;
     public bool generateAutoTiles;
     public AutoTile[] autoTiles;
+    public bool isResource;
+    public float singleResourceChance;
+    public float veinChance;
+    public float veinContinuationBias;
+    public string resourceSpawnTile;
 }
 
 [System.Serializable]
@@ -102,7 +107,6 @@ public class TileManager : MonoBehaviour
 
      public override void OnInspectorGUI()
      {
-        //trackData.Update();
         DrawDefaultInspector();
         
         EditorGUILayout.BeginVertical();
@@ -131,7 +135,7 @@ public class TileManager : MonoBehaviour
 
             script.isTerrain = EditorGUILayout.Toggle("Is Terrain", script.isTerrain);
             if (script.isTerrain) {
-                script.spawnChance = EditorGUILayout.FloatField("spawnChance", script.spawnChance);
+                script.spawnChance = EditorGUILayout.FloatField("Spawn Chance", script.spawnChance);
                 script.continuationBias = EditorGUILayout.FloatField("Continuation Bias", script.continuationBias);
                 script.priority = EditorGUILayout.IntField("Priority", script.priority);
                 script.generateAutoTiles = EditorGUILayout.Toggle("Generate Auto Tiles?", script.generateAutoTiles);
@@ -141,15 +145,14 @@ public class TileManager : MonoBehaviour
                     for(int j = 0; j < stringTypes.Length; ++j){
                         script.autoTiles[j].tileName = script.tileName + stringTypes[j];
                     }
-                    // showAutoTiles = EditorGUILayout.Foldout(showAutoTiles, "Auto Tiles");
-                    // if(showAutoTiles){
-                    //     script.autoTiles = new TileInfo.AutoTile[stringTypes.Length];
-                    //     for(int j = 0; j < stringTypes.Length; ++j){
-                    //         script.autoTiles[j].tileName = script.tileName + stringTypes[j];
-                    //         script.autoTiles[j].id = script.id + j;
-                    //     }
-                    // }
                 }
+            }
+            script.isResource = EditorGUILayout.Toggle("Is Resource", script.isResource);
+            if(script.isResource){
+                script.singleResourceChance = EditorGUILayout.FloatField("Single Resource Chance", script.singleResourceChance);
+                script.veinChance = EditorGUILayout.FloatField("Vein Chance", script.veinChance);
+                script.veinContinuationBias = EditorGUILayout.FloatField("Vein Continuation Bias", script.veinContinuationBias);
+                script.resourceSpawnTile = EditorGUILayout.TextField("Resource Spawn Tile", script.resourceSpawnTile);
             }
             manager.editorTiles[i] = script;
         }

@@ -40,27 +40,6 @@ public class ProceduralGenerator : MonoBehaviour
         }
     }
 
-    // void GenerateNewTerrain(){
-    //     for(int x = 0; x < chunkAmount; ++x){
-    //         for(int y = 0; y < chunkAmount; ++y){
-    //             if(world[x, y] != null) continue;
-    //             world[x, y] = new Chunk(world[chunkAmount / 2, chunkAmount / 2].x + x - 2,
-    //                                     world[chunkAmount / 2, chunkAmount / 2].y + y - 2);
-    //             //StartCoroutine(generator.GenerateChunkConcurrently(world[x, y]));
-    //             generator.GenerateChunk(world[x, y]);
-    //         }
-    //     }
-    // }
-
-    // void GenerateNewSprites(){
-    //     for(int x = 1; x < chunkAmount - 1; ++x){
-    //         for(int y = 1; y < chunkAmount - 1; ++y){
-    //             if(world[x, y].grid[0,0].tile != null) continue;
-    //             //generator.MakeChunkSprites(world, x, y);
-    //         }
-    //     }
-    // }
-
     void Start()
     {
         loadedChunks = new Dictionary<Vector2, Chunk>();
@@ -76,10 +55,8 @@ public class ProceduralGenerator : MonoBehaviour
         for(int x = 0; x < chunkAmount; ++x){
             for(int y = 0; y < chunkAmount; ++y){
                 world[x, y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
-                //generator.GenerateChunk(world[x, y]);
             }
         }
-        //GenerateNewSprites();
         generator.LoadChunks(world);
         prevPlayerPos = new Vector2(xp, yp);
     }
@@ -104,6 +81,7 @@ public class ProceduralGenerator : MonoBehaviour
         int yp = (int)Mathf.Floor(player.transform.position.y / Chunk.chunkSize);
         if(xp != prevPlayerPos.x || yp != prevPlayerPos.y){
             Vector2 dir = new Vector2(xp - prevPlayerPos.x, yp - prevPlayerPos.y);
+            Debug.Log(player.transform.position);
             TranslateChunks(dir);
             GenerateNewTerrain(xp, yp);
             generator.LoadChunks(world);

@@ -12,6 +12,11 @@ public class TileInfo {
     public float continuationBias;
     public int priority;
     public bool hasAutoTiles;
+    public bool isResource;
+    public float singleResourceChance;
+    public float veinChance;
+    public float veinContinuationBias;
+    public string resourceSpawnTile;
     public Sprite[] sprites;
 
     public TileInfo(EditorTile et, int id){
@@ -26,6 +31,11 @@ public class TileInfo {
         continuationBias = et.continuationBias;
         priority = et.priority;
         hasAutoTiles = et.generateAutoTiles;
+        isResource = et.isResource;
+        singleResourceChance = et.singleResourceChance;
+        veinChance = et.veinChance;
+        veinContinuationBias = et.veinContinuationBias;
+        resourceSpawnTile = et.resourceSpawnTile;
     }
 
     public TileInfo(EditorTile et, string tileName, int id){
@@ -45,6 +55,11 @@ public class TileInfo {
         continuationBias = et.continuationBias;
         priority = et.priority;
         hasAutoTiles = et.generateAutoTiles;
+        isResource = et.isResource;
+        singleResourceChance = et.singleResourceChance;
+        veinChance = et.veinChance;
+        veinContinuationBias = et.veinContinuationBias;
+        resourceSpawnTile = et.resourceSpawnTile;
     }
 
     public static int ComparePriority(TileInfo thisInfo, TileInfo other){
