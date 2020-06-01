@@ -20,27 +20,29 @@ public class CameraController : MonoBehaviour
 
     void FixedUpdate()
     {
-        float camSpeed = speed;
-        if(Input.GetAxisRaw("Fire3") > 0f) camSpeed = fastSpeed;
-        float xTranslation = Input.GetAxisRaw("Horizontal") * camSpeed;
-        float yTranslation = Input.GetAxisRaw("Vertical") * camSpeed;
-        xTranslation *= Time.deltaTime;
-        yTranslation *= Time.deltaTime;
-        float scroll = Input.mouseScrollDelta.y;
-        if(Input.GetAxisRaw("Tab") > 0 && player != null) isFollowingPlayer = !isFollowingPlayer;
-        if(scroll != 0f){
-            if(scroll > 0f){
-                cam.orthographicSize += scrollSpeed;
-            } else {
-                cam.orthographicSize -= scrollSpeed;
+        if(!MenuManager.IsMenuActive()){
+            float camSpeed = speed;
+            if(Input.GetAxisRaw("Fire3") > 0f) camSpeed = fastSpeed;
+            float xTranslation = Input.GetAxisRaw("Horizontal") * camSpeed;
+            float yTranslation = Input.GetAxisRaw("Vertical") * camSpeed;
+            xTranslation *= Time.deltaTime;
+            yTranslation *= Time.deltaTime;
+            float scroll = Input.mouseScrollDelta.y;
+            if(Input.GetAxisRaw("Tab") > 0 && player != null) isFollowingPlayer = !isFollowingPlayer;
+            if(scroll != 0f){
+                if(scroll > 0f){
+                    cam.orthographicSize += scrollSpeed;
+                } else {
+                    cam.orthographicSize -= scrollSpeed;
+                }
             }
-        }
-        if(!isFollowingPlayer){
-            transform.Translate(xTranslation, yTranslation, 0);
-        } else {
-            xTranslation = player.transform.position.x - cam.transform.position.x;
-            yTranslation = player.transform.position.y - cam.transform.position.y;
-            transform.Translate(xTranslation, yTranslation, 0);
+            if(!isFollowingPlayer){
+                transform.Translate(xTranslation, yTranslation, 0);
+            } else {
+                xTranslation = player.transform.position.x - cam.transform.position.x;
+                yTranslation = player.transform.position.y - cam.transform.position.y;
+                transform.Translate(xTranslation, yTranslation, 0);
+            }
         }
     }
 }

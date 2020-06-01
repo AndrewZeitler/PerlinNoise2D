@@ -39,7 +39,6 @@ public struct EditorTile
 [System.Serializable]
 public class TileManager : MonoBehaviour
 {
-    public SpriteManager spriteManager;
     public string defaultTileName;
     [HideInInspector]
     public TileInfo defaultTile;
@@ -67,7 +66,7 @@ public class TileManager : MonoBehaviour
             }
         }
         foreach(TileInfo tile in tiles){
-            tile.sprites = spriteManager.GetSprites(tile);
+            tile.sprites = SpriteManager.GetSprites(tile);
             nameToTile.Add(tile.tileName, tile);
         }
         defaultTile = nameToTile[defaultTileName];
