@@ -163,15 +163,18 @@ public class WorldGenerator : MonoBehaviour
                     double rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
                     if(isContinuation(chunks, xChunk, yChunk, x, y, tileInfo.id)){
                         if(rand <= tileInfo.spawnChance + tileInfo.continuationBias){
+                            chunk.terrain[x,y].name = tileInfo.tileName;
                             chunk.terrain[x,y].id = tileInfo.id;
                             chunk.terrain[x,y].isWalkable = tileInfo.isWalkable;
                         } else {
+                            chunk.terrain[x,y].name = tileManager.defaultTile.tileName;
                             chunk.terrain[x,y].id = tileManager.defaultTile.id;
                             chunk.terrain[x,y].isWalkable = tileManager.defaultTile.isWalkable;
                         }
                     } else {
                         // Otherwise check if perlin noise value is less than the spawn chance of the tile
                         if(rand <= tileInfo.spawnChance){
+                            chunk.terrain[x,y].name = tileInfo.tileName;
                             chunk.terrain[x,y].id = tileInfo.id;
                             chunk.terrain[x,y].isWalkable = tileInfo.isWalkable;
                         }
@@ -192,11 +195,13 @@ public class WorldGenerator : MonoBehaviour
                     if(chunk.tiles[x,y].id != -1) continue;
                     double rand = Random.value;
                     if(rand < tileInfo.singleResourceChance){
+                        chunk.tiles[x,y].name = tileInfo.tileName;
                         chunk.tiles[x,y].id = tileInfo.id;
                         chunk.tiles[x,y].isWalkable = tileInfo.isWalkable;
                     } else {
                         rand = PerlinNoise(x + chunk.x * Chunk.chunkSize, y + chunk.y * Chunk.chunkSize, i);
                         if(rand < tileInfo.veinChance){
+                            chunk.tiles[x,y].name = tileInfo.tileName;
                             chunk.tiles[x,y].id = tileInfo.id;
                             chunk.tiles[x,y].isWalkable = tileInfo.isWalkable;
                         }

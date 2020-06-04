@@ -6,7 +6,7 @@ public class ProceduralGenerator : MonoBehaviour
 {
     public GameObject player;
     public WorldGenerator generator;
-    Chunk[,] world;
+    public Chunk[,] world;
     public int chunkSize = 16;
     public int chunkAmount = 5;
     public int collisionRadius;
@@ -14,6 +14,8 @@ public class ProceduralGenerator : MonoBehaviour
     Dictionary<Vector2, Chunk> loadedChunks;
 
     Vector2 prevPlayerPos;
+
+    bool worldIsGenerated = false;
 
     void TranslateChunks(Vector2 dir){
         int x = (dir.x == -1 ? chunkAmount - 1 : 0);
@@ -41,8 +43,7 @@ public class ProceduralGenerator : MonoBehaviour
         }
     }
 
-    void Start()
-    {
+    void Start() {
         loadedChunks = new Dictionary<Vector2, Chunk>();
         Chunk.chunkSize = chunkSize;
         world = new Chunk[chunkAmount, chunkAmount];
@@ -60,6 +61,7 @@ public class ProceduralGenerator : MonoBehaviour
         }
         generator.LoadChunks(world);
         prevPlayerPos = new Vector2(xp, yp);
+        worldIsGenerated = true;
     }
 
     void GenerateNewTerrain(int xp, int yp){
@@ -106,6 +108,7 @@ public class ProceduralGenerator : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(!worldIsGenerated) return;
         //UpdateColliders(player.transform.position.x, player.transform.position.y);
         int xp = (int)Mathf.Floor(player.transform.position.x / Chunk.chunkSize);
         int yp = (int)Mathf.Floor(player.transform.position.y / Chunk.chunkSize);

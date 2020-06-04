@@ -48,15 +48,10 @@
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\Chunk.cs" />
      <Compile Include="Assets\Scripts\ChunkState.cs" />
-     <Compile Include="Assets\Scripts\CursorManager.cs" />
-     <Compile Include="Assets\Scripts\HeldItem.cs" />
      <Compile Include="Assets\Scripts\Inventory.cs" />
-     <Compile Include="Assets\Scripts\InventoryUI.cs" />
      <Compile Include="Assets\Scripts\Item.cs" />
-     <Compile Include="Assets\Scripts\ItemDescriptionUI.cs" />
      <Compile Include="Assets\Scripts\ItemManager.cs" />
      <Compile Include="Assets\Scripts\ItemSlot.cs" />
-     <Compile Include="Assets\Scripts\ItemSlotUI.cs" />
      <Compile Include="Assets\Scripts\ItemStack.cs" />
      <Compile Include="Assets\Scripts\MenuManager.cs" />
      <Compile Include="Assets\Scripts\PerlinNoiseGenerator.cs" />
@@ -66,9 +61,19 @@
      <Compile Include="Assets\Scripts\TerrainBrush.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
      <Compile Include="Assets\Scripts\TileAnimator.cs" />
+     <Compile Include="Assets\Scripts\TileBehaviorManager.cs" />
      <Compile Include="Assets\Scripts\TileInfo.cs" />
      <Compile Include="Assets\Scripts\TileManager.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileBehavior.cs" />
+     <Compile Include="Assets\Scripts\UI\CursorManager.cs" />
+     <Compile Include="Assets\Scripts\UI\HeldItem.cs" />
+     <Compile Include="Assets\Scripts\UI\HotbarUI.cs" />
+     <Compile Include="Assets\Scripts\UI\InventoryUI.cs" />
+     <Compile Include="Assets\Scripts\UI\ItemDescriptionUI.cs" />
+     <Compile Include="Assets\Scripts\UI\ItemSlotHolderUI.cs" />
+     <Compile Include="Assets\Scripts\UI\ItemSlotUI.cs" />
      <Compile Include="Assets\Scripts\WorldGenerator.cs" />
+     <Compile Include="Assets\Scripts\WorldManager.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Users/Andrew/2D Perlin/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

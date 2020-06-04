@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile {
+    public string name;
     public int id;
     public GameObject tile;
     public bool isWalkable;

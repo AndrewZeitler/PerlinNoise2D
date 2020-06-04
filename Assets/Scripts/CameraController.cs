@@ -29,7 +29,7 @@ public class CameraController : MonoBehaviour
             yTranslation *= Time.deltaTime;
             float scroll = Input.mouseScrollDelta.y;
             if(Input.GetAxisRaw("Tab") > 0 && player != null) isFollowingPlayer = !isFollowingPlayer;
-            if(scroll != 0f){
+            if(scroll != 0f && !isFollowingPlayer){
                 if(scroll > 0f){
                     cam.orthographicSize += scrollSpeed;
                 } else {

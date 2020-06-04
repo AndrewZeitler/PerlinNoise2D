@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUI : MonoBehaviour
+public class InventoryUI : ItemSlotHolderUI
 {
-    private Inventory inventory;
-
-    public void CreateUI(Inventory inventory, GameObject slotPrefab){
+    public override void CreateUI(Inventory inventory, GameObject slotPrefab){
         this.inventory = inventory;
 
         float aspectRatio = Screen.width / (float)Screen.height;
@@ -18,7 +16,7 @@ public class InventoryUI : MonoBehaviour
         for(int i = 0; i < inventory.GetInventorySize(); ++i){
             GameObject slot = Instantiate(slotPrefab);
             slot.transform.SetParent(transform);
-            slot.GetComponent<ItemSlotUI>().index = i;
+            slot.AddComponent<ItemSlotUI>().index = i;
             RectTransform slotTransform = slot.GetComponent<RectTransform>();
             slotTransform.offsetMin = slotTransform.offsetMax = Vector3.zero;
             slotTransform.anchorMin = new Vector2(1f / inventory.GetColumns() * (i % inventory.GetColumns()), 1f - slotHeight * (i / inventory.GetColumns() + 1) / uiTransform.anchorMax.y);
@@ -28,7 +26,7 @@ public class InventoryUI : MonoBehaviour
         inventory.AddListener(InventoryChanged);
     }
 
-    public void InventoryChanged(){
+    public override void InventoryChanged(){
         for(int i = 0; i < transform.childCount; ++i){
             ItemStack item = inventory.GetItemStackAt(i);
             Image image = transform.GetChild(i).GetChild(0).GetComponent<Image>();
@@ -50,7 +48,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public ItemStack ClickSlot(GameObject heldItem, GameObject clickedSlot){
+    public override ItemStack ClickSlot(GameObject heldItem, GameObject clickedSlot){
         ItemStack item = null;
         if(heldItem != null){
             item = heldItem.GetComponent<HeldItem>().itemStack;

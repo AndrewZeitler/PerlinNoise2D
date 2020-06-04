@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class MenuManager : MonoBehaviour
 {   
@@ -24,6 +25,8 @@ public class MenuManager : MonoBehaviour
     private static int currentTab = 0;
     private static GameObject heldItem = null;
     private static GameObject itemDescription = null;
+    private static UnityEvent inventoryOpen;
+    private static HotbarUI hotbar;
 
     void Start() {
         MenuManager.menu = serializedMenu;
@@ -35,6 +38,7 @@ public class MenuManager : MonoBehaviour
         RectTransform emptyRect = emptyPrefab.AddComponent<RectTransform>();
         emptyRect.anchorMin = Vector2.zero;
         emptyRect.anchorMax = Vector2.one;
+        inventoryOpen = new UnityEvent();
     }
 
     public static void ToggleMenu(){
@@ -44,6 +48,7 @@ public class MenuManager : MonoBehaviour
             pages[currentTab].transform.SetAsLastSibling();
             pages[currentTab].transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
         }
+        inventoryOpen.Invoke();
     }
 
     public static bool IsMenuActive(){
@@ -86,6 +91,15 @@ public class MenuManager : MonoBehaviour
         return true;
     }
 
+    public static HotbarUI CreateHotbar(){
+        GameObject content = RectTransform.Instantiate(emptyPrefab);
+        content.transform.SetParent(menu.transform.parent);
+        hotbar = content.AddComponent<HotbarUI>();
+        Inventory inv = new Inventory(9, 1, "Hotbar");
+        hotbar.CreateUI(inv, slotPrefab);
+        return hotbar;
+    }
+
     public static void OnTabClick(GameObject click){
         click.transform.SetAsLastSibling();
         int index = 0;
@@ -98,7 +112,7 @@ public class MenuManager : MonoBehaviour
     }
 
     public static void ItemSlotClick(PointerEventData pointer, GameObject itemSlot){
-        ItemStack newItem = itemSlot.transform.parent.GetComponent<InventoryUI>().ClickSlot(heldItem, itemSlot);
+        ItemStack newItem = itemSlot.transform.parent.GetComponent<ItemSlotHolderUI>().ClickSlot(heldItem, itemSlot);
 
         if(newItem == null){
             if(heldItem != null){
@@ -133,11 +147,17 @@ public class MenuManager : MonoBehaviour
     }
 
     public static void ItemSlotEnter(PointerEventData pointer, GameObject itemSlot){
+        Debug.Log("Enter");
         if(heldItem != null) return;
         CreateItemDescription(itemSlot.GetComponent<ItemSlotUI>().itemStack);
     }
 
     public static void ItemSlotExit(PointerEventData pointer, GameObject itemSlot){
+        Debug.Log("Exit");
         Destroy(itemDescription);
+    }
+
+    public static void AddInventoryOpenListener(UnityAction listener) {
+        inventoryOpen.AddListener(listener);
     }
 }

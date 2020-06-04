@@ -6,11 +6,13 @@ public class PlayerController : MonoBehaviour
 {
     public float movementSpeed;
     public float fastSpeed;
+    public float range;
     public int inventorySize;
     public int inventoryColumns;
     private Rigidbody2D body;
     private SpriteRenderer spriteRenderer;
     private Inventory inventory;
+    private HotbarUI hotbar;
     private bool prevInteract = false;
 
     void Start()
@@ -22,6 +24,7 @@ public class PlayerController : MonoBehaviour
         inventory.AddItem(new ItemStack(itemManager.GetItem("pickaxe"), 1));
         inventory.AddItem(new ItemStack(itemManager.GetItem("shovel"), 1));
         inventory.AddItem(new ItemStack(itemManager.GetItem("wood"), 10));
+        hotbar = MenuManager.CreateHotbar();
         MenuManager.AddComponentDisplay(inventory);
         MenuManager.AddComponentDisplay(new Inventory(inventorySize, inventoryColumns, "Test"));
     }

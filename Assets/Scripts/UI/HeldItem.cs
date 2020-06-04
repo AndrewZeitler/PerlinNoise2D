@@ -10,6 +10,8 @@ public class HeldItem : MonoBehaviour
 
     private void Start() {
         rectTransform = GetComponent<RectTransform>();
+        rectTransform.localPosition = new Vector2(Input.mousePosition.x - Screen.width / 2, 
+                                                   Input.mousePosition.y - Screen.height / 2);
     }
 
     public void SetItemStack(ItemStack itemStack){
