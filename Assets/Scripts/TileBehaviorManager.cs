@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TileBehaviorManager : MonoBehaviour
 {
-    public static TileBehavior GetTileBehavior(){
+    // public static TileBehavior GetTileBehavior(){
         
-    }
+    // }
 }

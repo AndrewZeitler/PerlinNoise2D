@@ -50,7 +50,7 @@ public class TileManager : MonoBehaviour
     private Dictionary<string, TileInfo> nameToTile;
 
     private void Start() {
-        int id = 0;
+        int id = 1;
         tiles = new List<TileInfo>();
         nameToTile = new Dictionary<string, TileInfo>();
 

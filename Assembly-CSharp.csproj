@@ -48,6 +48,7 @@
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\Chunk.cs" />
      <Compile Include="Assets\Scripts\ChunkState.cs" />
+     <Compile Include="Assets\Scripts\Events\PlayerEvent.cs" />
      <Compile Include="Assets\Scripts\Inventory.cs" />
      <Compile Include="Assets\Scripts\Item.cs" />
      <Compile Include="Assets\Scripts\ItemManager.cs" />
@@ -64,7 +65,15 @@
      <Compile Include="Assets\Scripts\TileBehaviorManager.cs" />
      <Compile Include="Assets\Scripts\TileInfo.cs" />
      <Compile Include="Assets\Scripts\TileManager.cs" />
-     <Compile Include="Assets\Scripts\Tiles\TileBehavior.cs" />
+     <Compile Include="Assets\Scripts\Tiles\AutoTile.cs" />
+     <Compile Include="Assets\Scripts\Tiles\AutoTileAnimated.cs" />
+     <Compile Include="Assets\Scripts\Tiles\Tile.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileData.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileEnum.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileModifier.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileOrderer.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileRenderer.cs" />
+     <Compile Include="Assets\Scripts\Tiles\TileScript.cs" />
      <Compile Include="Assets\Scripts\UI\CursorManager.cs" />
      <Compile Include="Assets\Scripts\UI\HeldItem.cs" />
      <Compile Include="Assets\Scripts\UI\HotbarUI.cs" />

@@ -2,18 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
+using Tiles;
 
 public class SpriteManager : MonoBehaviour
 {
-    public SpriteAtlas terrainSpriteSheet;
+    public SpriteAtlas tileSpriteSheet;
     public SpriteAtlas itemSpriteSheet;
 
-    private static SpriteAtlas terrainSprites;
+    private static SpriteAtlas tileSprites;
     private static SpriteAtlas itemSprites;
 
+    private static Dictionary<string, Sprite> nameToTile;
+    private static Dictionary<string, Sprite> nameToItem;
+
     private void Start() {
-        terrainSprites = terrainSpriteSheet;
+        tileSprites = tileSpriteSheet;
         itemSprites = itemSpriteSheet;
+
+        nameToTile = new Dictionary<string, Sprite>();
+        nameToItem = new Dictionary<string, Sprite>();
+
+        Sprite[] sprites = new Sprite[tileSprites.spriteCount];
+        tileSpriteSheet.GetSprites(sprites);
+        foreach(Sprite sprite in sprites){
+            nameToTile[sprite.name.Replace("(Clone)", "")] = sprite;
+        }
+
+        sprites = new Sprite[itemSprites.spriteCount];
+        itemSpriteSheet.GetSprites(sprites);
+        foreach(Sprite sprite in sprites){
+            nameToItem[sprite.name.Replace("(Clone)", "")] = sprite;
+        }
     }
 
     public static Sprite[] GetSprites(TileInfo tile){
@@ -21,21 +40,21 @@ public class SpriteManager : MonoBehaviour
         if(tile.isAnimation){
             sprites = new Sprite[tile.animationFrames];
             for(int i = 0; i < tile.animationFrames; ++i){
-                sprites[i] = terrainSprites.GetSprite(tile.tileName + i);
+                sprites[i] = tileSprites.GetSprite(tile.tileName + i);
             }
         } else {
             sprites = new Sprite[tile.amount];
             if(tile.hasAutoTiles) {
                 if(tile.tileName.Contains("Center")){
                     for(int i = 0; i < tile.amount; ++i){
-                        sprites[i] = terrainSprites.GetSprite(tile.tileName + i);
+                        sprites[i] = tileSprites.GetSprite(tile.tileName + i);
                     }
                 } else {
-                    sprites[0] = terrainSprites.GetSprite(tile.tileName);
+                    sprites[0] = tileSprites.GetSprite(tile.tileName);
                 }
             } else {
                 for(int i = 0; i < tile.amount; ++i){
-                    sprites[i] = terrainSprites.GetSprite(tile.tileName + i);
+                    sprites[i] = tileSprites.GetSprite(tile.tileName + i);
                 }
             }
         }
@@ -44,5 +63,17 @@ public class SpriteManager : MonoBehaviour
 
     public static Sprite GetSprite(Item item){
         return itemSprites.GetSprite(item.name);
+    }
+
+    public static Sprite GetTileSprite(string name){
+        return nameToTile[name];
+    }
+
+    public static Sprite GetItemSprite(string name){
+        return nameToItem[name];
+    }
+
+    public static Sprite[] GetSprites(TileData tileData){
+        return null;
     }
 }

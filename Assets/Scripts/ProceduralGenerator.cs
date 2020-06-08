@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using World;
 
 public class ProceduralGenerator : MonoBehaviour
 {
@@ -10,8 +11,6 @@ public class ProceduralGenerator : MonoBehaviour
     public int chunkSize = 16;
     public int chunkAmount = 5;
     public int collisionRadius;
-
-    Dictionary<Vector2, Chunk> loadedChunks;
 
     Vector2 prevPlayerPos;
 
@@ -25,10 +24,8 @@ public class ProceduralGenerator : MonoBehaviour
                 if(((x == 0 && dir.x == 1) || (x == chunkAmount - 1 && dir.x == -1)) || 
                    ((y == 0 && dir.y == 1) || (y == chunkAmount - 1 && dir.y == -1))) {
                        StartCoroutine(world[x, y].DestroyChunk());
-                       if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Smoothed;
-                       if(!loadedChunks.ContainsKey(new Vector2(world[x,y].x, world[x,y].y))){
-                           loadedChunks[new Vector2(world[x,y].x, world[x,y].y)] = world[x,y];
-                       }
+                       if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Saved;
+                       //WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x,y]);
                        world[x,y] = null;
                 } else {
                     world[x - (int)dir.x, y - (int)dir.y] = world[x,y];
@@ -44,7 +41,6 @@ public class ProceduralGenerator : MonoBehaviour
     }
 
     void Start() {
-        loadedChunks = new Dictionary<Vector2, Chunk>();
         Chunk.chunkSize = chunkSize;
         world = new Chunk[chunkAmount, chunkAmount];
         for(int x = 0; x < chunkAmount; ++x){
@@ -57,6 +53,7 @@ public class ProceduralGenerator : MonoBehaviour
         for(int x = 0; x < chunkAmount; ++x){
             for(int y = 0; y < chunkAmount; ++y){
                 world[x, y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
+                WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x, y]);
             }
         }
         generator.LoadChunks(world);
@@ -68,10 +65,12 @@ public class ProceduralGenerator : MonoBehaviour
         for(int x = 0; x < chunkAmount; ++x){
             for(int y = 0; y < chunkAmount; ++y){
                 if(world[x,y] == null){
-                    if(loadedChunks.ContainsKey(new Vector2(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2))){
-                        world[x,y] = loadedChunks[new Vector2(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2)];
+                    Chunk chunk = WorldManager.GetChunk(new Vector2(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2));
+                    if(chunk != null){
+                        world[x,y] = chunk;
                     } else {
                         world[x,y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
+                        WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x, y]);
                     }
                 }
             }
@@ -79,7 +78,6 @@ public class ProceduralGenerator : MonoBehaviour
     }
 
     void UpdateColliders(float x, float y){
-        Debug.Log("Player: " + new Vector2(x, y));
         for(int xd = -collisionRadius - 1; xd < collisionRadius + 2; ++xd){
             for(int yd = -collisionRadius - 1; yd < collisionRadius + 2; ++yd){
                 int xc = Mathf.FloorToInt((x + xd) / Chunk.chunkSize) - world[0,0].x;
@@ -90,15 +88,15 @@ public class ProceduralGenerator : MonoBehaviour
                 if(yt < 0) yt = Chunk.chunkSize + yt;
                 // Debug.Log(new Vector2((xc + world[0,0].x) * Chunk.chunkSize + xt, (yc + world[0,0].y) * Chunk.chunkSize + yt));
                 if(Vector2.Distance(new Vector2(x, y), new Vector2(x + xd, y + yd)) <= collisionRadius){
-                    if(!world[xc, yc].tiles[xt, yt].isWalkable && !world[xc, yc].tiles[xt, yt].hasCollider){
-                        BoxCollider2D boxCollider = world[xc, yc].tiles[xt, yt].tile.AddComponent<BoxCollider2D>();
+                    if(!world[xc, yc].tiles[xt, yt].tileData.IsWalkable && !world[xc, yc].tiles[xt, yt].hasCollider){
+                        BoxCollider2D boxCollider = world[xc, yc].tiles[xt, yt].gameObject.AddComponent<BoxCollider2D>();
                         //boxCollider.size = new Vector2(1, 1);
                         world[xc, yc].tiles[xt, yt].hasCollider = true;
                     }
                 } else {
                     Debug.Log(new Vector2(x + xd, y + yd));
                     if(world[xc, yc].tiles[xt, yt].hasCollider){
-                        Destroy(world[xc, yc].tiles[xt, yt].tile.GetComponent<BoxCollider2D>());
+                        Destroy(world[xc, yc].tiles[xt, yt].gameObject.GetComponent<BoxCollider2D>());
                         world[xc, yc].tiles[xt, yt].hasCollider = false;
                     }
                 }

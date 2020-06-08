@@ -42,8 +42,7 @@ public class PlayerController : MonoBehaviour
             float yTranslation = Input.GetAxisRaw("Vertical");
             Vector2 movement = new Vector2(xTranslation, yTranslation);
             body.velocity = movement.normalized * speed;
-            short order = (short) Mathf.CeilToInt(-transform.position.y);
-            spriteRenderer.sortingOrder = order;
+            transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.Floor(transform.position.y) + 0.5f);
         }
     }
 }
