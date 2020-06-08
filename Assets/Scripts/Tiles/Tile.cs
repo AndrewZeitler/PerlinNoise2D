@@ -16,11 +16,13 @@ namespace Tiles {
 
         UnityEvent OnDataChange;
         UnityEvent OnObjectCreated;
+        UnityEvent OnObjectDestroyed;
         PlayerEvent OnAttack;
         PlayerEvent OnInteract;
 
         public Tile(TileData tileData){
             OnObjectCreated = new UnityEvent();
+            OnObjectDestroyed = new UnityEvent();
             OnDataChange = new UnityEvent();
             OnAttack = new PlayerEvent();
             OnInteract = new PlayerEvent();
@@ -45,6 +47,7 @@ namespace Tiles {
                 foreach(TileModifier modifier in modifiers){
                     modifier.Destroy();
                 }
+                modifiers = null;
                 OnObjectCreated.RemoveAllListeners();
                 OnDataChange.RemoveAllListeners();
                 OnAttack.RemoveAllListeners();
@@ -62,12 +65,15 @@ namespace Tiles {
             gameObject = GameObject.Instantiate(new GameObject(), new Vector3(pos.x, pos.y, pos.y), Quaternion.identity);
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             tileScript = gameObject.AddComponent<TileScript>();
-            spriteRenderer.sortingLayerName = "Terrain";
             OnObjectCreated.Invoke();
         }
 
         public void AddCreateListener(UnityAction listener){
             OnObjectCreated.AddListener(listener);
+        }
+
+        public void AddDestroyListener(UnityAction listener){
+            OnObjectDestroyed.AddListener(listener);
         }
 
         public void AddDataChangeListener(UnityAction listener){

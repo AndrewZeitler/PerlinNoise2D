@@ -1,30 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Tiles {
-    public abstract class TileEnum {
+namespace Items {
+    public abstract class ItemEnum {
         public string Name { get; }
         public int Id { get; }
-        public TileModifier[] TileModifiers { get; }
-        public bool IsWalkable { get; }
+        public ItemModifier[] ItemModifiers { get; }
 
-        protected TileEnum(string name, int id, TileModifier[] tileModifiers, bool isWalkable){
+        protected ItemEnum(string name, int id, ItemModifier[] itemModifiers){
             Name = name;
             Id = id;
-            TileModifiers = tileModifiers;
-            IsWalkable = isWalkable;
+            ItemModifiers = itemModifiers;
         }
 
         public override string ToString() { return Name; }
         public override bool Equals(object obj) {
-            var other = obj as TileEnum;
+            var other = obj as ItemEnum;
             if(other == null) return false;
             if(!GetType().Equals(obj.GetType())) return false;
-            return (Id == other.Id);
+            return (Name.Equals(other.Name));
         }
 
         public override int GetHashCode(){
-            return Id.GetHashCode();
+            return Name.GetHashCode();
         }
     }
 }

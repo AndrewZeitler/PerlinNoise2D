@@ -33,7 +33,7 @@ public class InventoryUI : ItemSlotHolderUI
             Text text = transform.GetChild(i).GetChild(1).GetComponent<Text>();
             transform.GetChild(i).GetComponent<ItemSlotUI>().itemStack = item;
             if(item != null){
-                image.sprite = SpriteManager.GetSprite(item.GetItem());
+                image.sprite = SpriteManager.GetItemSprite(item.GetItem().itemData.Name);
                 image.color = new Color(1, 1, 1, 1);
                 if(item.GetAmount() > 1){
                     text.text = item.GetAmount().ToString();

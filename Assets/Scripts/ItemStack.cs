@@ -1,3 +1,4 @@
+using Items;
 
 public class ItemStack {
     public static int StackLimit = 100;
@@ -6,6 +7,11 @@ public class ItemStack {
 
     public ItemStack(Item item, int amount){
         this.item = item;
+        this.amount = amount;
+    }
+
+    public ItemStack(ItemData itemData, int amount){
+        this.item = new Item(itemData);
         this.amount = amount;
     }
 

@@ -18,6 +18,7 @@ namespace Tiles {
         public override void Initialize(Tile tile) {
             this.tile = tile;
             tile.AddCreateListener(UpdateSprite);
+            tile.AddDestroyListener(StopAnimation);
         }
 
         public void UpdateSprite(){
@@ -56,9 +57,12 @@ namespace Tiles {
             tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
         }
 
-        public override void Destroy(){
-            Debug.Log(tile.gameObject);
+        public void StopAnimation(){
             tile.tileScript.StopCoroutine(Animator());
+        }
+
+        public override void Destroy(){
+            StopAnimation();
             tile = null;
         }
     }

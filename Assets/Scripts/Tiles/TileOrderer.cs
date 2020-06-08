@@ -10,12 +10,13 @@ namespace Tiles {
         }
 
         public void OnObjectCreation(){
-            Vector2 pos = tile.gameObject.transform.position;
-            int yc = Mathf.FloorToInt(pos.y / Chunk.chunkSize);
-            int y = Mathf.FloorToInt(pos.y % Chunk.chunkSize);
-            if(y < 0) y += Chunk.chunkSize;
+            Vector3 pos = tile.gameObject.transform.position;
             tile.spriteRenderer.sortingLayerName = "Tiles";
-            tile.gameObject.transform.position = new Vector3(pos.x, pos.y, y + yc * Chunk.chunkSize + 0.5f * (pos.x % 2));
+            if(!tile.tileData.IsWalkable){
+                tile.gameObject.transform.position = new Vector3(pos.x, pos.y, pos.z + 0.25f * (pos.x % 2 + 1));
+            } else {
+                tile.gameObject.transform.position = new Vector3(pos.x, pos.y, pos.z + 10);
+            }
         }
     }
 }

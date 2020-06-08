@@ -19,7 +19,7 @@ public class WorldGenerator : MonoBehaviour
     void Start()
     {
         generator = new PerlinNoiseGenerator();
-        seed = System.Environment.TickCount / 10;
+        seed = Mathf.Abs(System.Environment.TickCount / 10);
         Debug.Log("Seed: " + seed);
         Random.InitState(seed);
         terrainBrush = new TerrainBrush(smoothBrushSize);
@@ -72,20 +72,6 @@ public class WorldGenerator : MonoBehaviour
         return ids;
     }
 
-    // public void SaveChunksArray(Chunk[,] chunks, int[,] ids){
-    //     for(int x = 0; x < chunks.GetLength(0); ++x){
-    //         for(int y = 0; y < chunks.GetLength(1); ++y){
-    //             if(chunks[x,y].chunkState != ChunkState.Smoothed) continue;
-    //             for(int xc = 0; xc < Chunk.chunkSize; ++xc){
-    //                 for(int yc = 0; yc < Chunk.chunkSize; ++yc){
-    //                     chunks[x,y].terrain[xc,yc].id = ids[x * Chunk.chunkSize + xc, y * Chunk.chunkSize + yc];
-    //                 }
-    //             }
-    //             chunks[x,y].chunkState = ChunkState.Saved;
-    //         }
-    //     }
-    // }
-
     public int GetId(Chunk[,] chunks, int x, int y){
         int xChunk = x / Chunk.chunkSize;
         int yChunk = y / Chunk.chunkSize;
@@ -118,24 +104,6 @@ public class WorldGenerator : MonoBehaviour
                 }
             }
         }
-        // int[,] ids = CreateChunksArray(chunks);
-        // int[,] savedIds = ids.Clone() as int[,];
-        // for(int x = smoothPadding; x < chunks.GetLength(0) - smoothPadding; ++x){
-        //     for(int y = smoothPadding; y < chunks.GetLength(1) - smoothPadding; ++y){
-        //         if(chunks[x,y].chunkState == ChunkState.Generated){
-        //             //SmoothChunk(ids, savedIds, x, y);
-        //             chunks[x,y].chunkState = ChunkState.Saved;
-        //         }
-        //     }
-        // }
-        //SaveChunksArray(chunks, ids);
-        // for(int x = 0; x < chunks.GetLength(0); ++x){
-        //     for(int y = 0; y < chunks.GetLength(1); ++y){
-        //         if(chunks[x,y].chunkState == ChunkState.Saved){
-                    
-        //         }
-        //     }
-        // }
         for(int x = renderedPadding; x < chunks.GetLength(0) - renderedPadding; ++x){
             for(int y = renderedPadding; y < chunks.GetLength(1) - renderedPadding; ++y){
                 if(chunks[x,y].chunkState == ChunkState.Saved){
@@ -242,50 +210,7 @@ public class WorldGenerator : MonoBehaviour
             for(int y = 0; y < Chunk.chunkSize; ++y){
                 chunk.terrain[x, y].CreateTileObject(new Vector2(x + chunk.x * Chunk.chunkSize, (y + chunk.y * Chunk.chunkSize)));
                 chunk.tiles[x, y].CreateTileObject(new Vector2(x + chunk.x * Chunk.chunkSize, (y + chunk.y * Chunk.chunkSize)));
-                // TileInfo tile = tileManager.GetTile(chunk.terrain[x,y].id);
-                // GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
-                //                                 (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
-                // SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
-                // if(tile.isAnimation){
-                //     sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
-                //     spriteRenderer.sprite = tile.sprites[0];
-                // } else {
-                //     spriteRenderer.sortingLayerName = "Terrain";
-                //     spriteRenderer.sprite = tileManager.GetSprite(tile.id);
-                // }
-                // if(!tile.isWalkable) sprite.AddComponent<PolygonCollider2D>();
-                // chunk.terrain[x,y].gameObject = sprite;
-                // if(tile.isAnimation){
-                //     spriteRenderer.enabled = false;
-                // }
             }
         }
     }
-
-    // void MakeResourceSprites(Chunk[,] chunks, int xChunk, int yChunk){
-    //     Chunk chunk = chunks[xChunk, yChunk];
-    //     for(int y = Chunk.chunkSize - 1; y >= 0; --y){
-    //         for(int x = 0; x < Chunk.chunkSize; ++x){
-    //             if(chunk.tiles[x,y].id == -1) continue;
-    //             TileInfo tile = tileManager.GetTile(chunk.tiles[x,y].id);
-    //             GameObject sprite = Instantiate(tileManager.tilePrefab, new Vector2(x + chunk.x * Chunk.chunkSize, 
-    //                                             (y + chunk.y * Chunk.chunkSize)), Quaternion.identity);
-    //             SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
-    //             if(tile.isAnimation){
-    //                 sprite.GetComponent<TileAnimator>().SetFrames(tile.sprites, tile.frameRate);
-    //                 spriteRenderer.sprite = tile.sprites[0];
-    //             } else {
-    //                 spriteRenderer.sortingLayerName = "Tiles";
-    //                 short order = (short)(-y - chunk.y * Chunk.chunkSize); // WILL WRAP AROUND EVENTUALLY
-    //                 spriteRenderer.sortingOrder = order;
-    //                 spriteRenderer.sprite = tileManager.GetSprite(tile.id);
-    //             }
-    //             if(!tile.isWalkable) sprite.AddComponent<PolygonCollider2D>();
-    //             chunk.tiles[x,y].tile = sprite;
-    //             // if(tile.isAnimation){
-    //             //     spriteRenderer.enabled = false;
-    //             // }
-    //         }
-    //     }
-    // }
 }

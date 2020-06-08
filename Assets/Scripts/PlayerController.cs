@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Items;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,10 +21,9 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         inventory = new Inventory(inventorySize, inventoryColumns, "Inventory");
-        ItemManager itemManager = FindObjectOfType<ItemManager>();
-        inventory.AddItem(new ItemStack(itemManager.GetItem("pickaxe"), 1));
-        inventory.AddItem(new ItemStack(itemManager.GetItem("shovel"), 1));
-        inventory.AddItem(new ItemStack(itemManager.GetItem("wood"), 10));
+        inventory.AddItem(new ItemStack(ItemData.PICKAXE, 1));
+        inventory.AddItem(new ItemStack(ItemData.SHOVEL, 1));
+        inventory.AddItem(new ItemStack(ItemData.WOOD, 10));
         hotbar = MenuManager.CreateHotbar();
         MenuManager.AddComponentDisplay(inventory);
         MenuManager.AddComponentDisplay(new Inventory(inventorySize, inventoryColumns, "Test"));

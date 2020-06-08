@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour
                 }
             }
             if(!isFollowingPlayer){
-                transform.Translate(xTranslation, yTranslation, 0);
+                transform.Translate(xTranslation, yTranslation, yTranslation);
             } else {
                 xTranslation = player.transform.position.x - cam.transform.position.x;
                 yTranslation = player.transform.position.y - cam.transform.position.y;

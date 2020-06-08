@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Items;
 
 public class HeldItem : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class HeldItem : MonoBehaviour
 
     public void SetItemStack(ItemStack itemStack){
         this.itemStack = itemStack;
-        transform.GetChild(0).GetComponent<Image>().sprite = SpriteManager.GetSprite(itemStack.GetItem());
+        transform.GetChild(0).GetComponent<Image>().sprite = SpriteManager.GetItemSprite(itemStack.GetItem().itemData.Name);
         transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 1);
         if(itemStack.GetAmount() > 1){
             transform.GetChild(1).GetComponent<Text>().text = itemStack.GetAmount().ToString();

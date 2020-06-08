@@ -41,7 +41,7 @@ public class HotbarUI : ItemSlotHolderUI
             transform.GetChild(i).GetComponent<ItemSlotUI>().itemStack = item;
             transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 0.7f);
             if(item != null){
-                image.sprite = SpriteManager.GetSprite(item.GetItem());
+                image.sprite = SpriteManager.GetItemSprite(item.GetItem().itemData.Name);
                 image.color = new Color(1, 1, 1, 0.7f);
                 text.color = new Color(1, 1, 1, 0.7f);
                 if(item.GetAmount() > 1){

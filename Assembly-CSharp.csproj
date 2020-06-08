@@ -54,6 +54,10 @@
      <Compile Include="Assets\Scripts\ItemManager.cs" />
      <Compile Include="Assets\Scripts\ItemSlot.cs" />
      <Compile Include="Assets\Scripts\ItemStack.cs" />
+     <Compile Include="Assets\Scripts\Items\Item.cs" />
+     <Compile Include="Assets\Scripts\Items\ItemData.cs" />
+     <Compile Include="Assets\Scripts\Items\ItemEnum.cs" />
+     <Compile Include="Assets\Scripts\Items\ItemModifier.cs" />
      <Compile Include="Assets\Scripts\MenuManager.cs" />
      <Compile Include="Assets\Scripts\PerlinNoiseGenerator.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
@@ -61,7 +65,6 @@
      <Compile Include="Assets\Scripts\SpriteManager.cs" />
      <Compile Include="Assets\Scripts\TerrainBrush.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
-     <Compile Include="Assets\Scripts\TileAnimator.cs" />
      <Compile Include="Assets\Scripts\TileBehaviorManager.cs" />
      <Compile Include="Assets\Scripts\TileInfo.cs" />
      <Compile Include="Assets\Scripts\TileManager.cs" />

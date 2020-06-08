@@ -1,4 +1,5 @@
 using UnityEngine.Events;
+using Items;
 
 public class Inventory {
 
@@ -60,7 +61,7 @@ public class Inventory {
     public int GetAmountOfType(Item item){
         int count = 0;
         foreach(ItemSlot slot in itemSlots){
-            if(slot.GetItemStack().GetItem().id == item.id) count += slot.GetItemStack().GetAmount();
+            if(slot.GetItemStack().GetItem().itemData.Id == item.itemData.Id) count += slot.GetItemStack().GetAmount();
         }
         return count;
     }

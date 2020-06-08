@@ -141,9 +141,9 @@ public class MenuManager : MonoBehaviour
         if(item == null) return;
         itemDescription = Instantiate(descriptionPrefab);
         itemDescription.transform.SetParent(menu.transform.parent);
-        string name = item.GetItem().name;
+        string name = item.GetItem().itemData.Name;
 
-        itemDescription.GetComponentInChildren<Text>().text = name.ToUpper();
+        itemDescription.GetComponentInChildren<Text>().text = name;
     }
 
     public static void ItemSlotEnter(PointerEventData pointer, GameObject itemSlot){

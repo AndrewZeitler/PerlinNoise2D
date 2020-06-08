@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 using Tiles;
+using Items;
 
 public class SpriteManager : MonoBehaviour
 {
@@ -25,13 +26,13 @@ public class SpriteManager : MonoBehaviour
         Sprite[] sprites = new Sprite[tileSprites.spriteCount];
         tileSpriteSheet.GetSprites(sprites);
         foreach(Sprite sprite in sprites){
-            nameToTile[sprite.name.Replace("(Clone)", "")] = sprite;
+            nameToTile[sprite.name] = sprite;
         }
 
         sprites = new Sprite[itemSprites.spriteCount];
         itemSpriteSheet.GetSprites(sprites);
         foreach(Sprite sprite in sprites){
-            nameToItem[sprite.name.Replace("(Clone)", "")] = sprite;
+            nameToItem[sprite.name] = sprite;
         }
     }
 
@@ -61,16 +62,16 @@ public class SpriteManager : MonoBehaviour
         return sprites;
     }
 
-    public static Sprite GetSprite(Item item){
-        return itemSprites.GetSprite(item.name);
-    }
+    // public static Sprite GetSprite(Item item){
+    //     return itemSprites.GetSprite(item.itemData.Name);
+    // }
 
     public static Sprite GetTileSprite(string name){
-        return nameToTile[name];
+        return nameToTile[name + "(Clone)"];
     }
 
     public static Sprite GetItemSprite(string name){
-        return nameToItem[name];
+        return nameToItem[name.ToLower() + "(Clone)"];
     }
 
     public static Sprite[] GetSprites(TileData tileData){
