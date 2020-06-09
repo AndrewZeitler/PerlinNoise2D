@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Tiles {
     public class TileData : TileEnum {
@@ -17,13 +18,32 @@ namespace Tiles {
         public static readonly TileData STONE_ROCK = new TileData("stoneRock", 7, new TileModifier[]{new TileRenderer(7), new TileOrderer()});
         public static readonly TileData LILYPAD = new TileData("lilypad", 8, new TileModifier[]{new TileRenderer(4), new TileOrderer()});
 
+        Dictionary<string, Sprite> sprites;
+
         public TileData(string name, int id, TileModifier[] tileModifiers) : base(name, id, tileModifiers, true) {
             idToData.Add(id, this);
             nameToData.Add(name, this);
+            sprites = SpriteManager.GetSprites(this);
         }
         public TileData(string name, int id, TileModifier[] tileModifiers, bool isWalkable) : base(name, id, tileModifiers, isWalkable) {
             idToData.Add(id, this);
             nameToData.Add(name, this);
+            sprites = SpriteManager.GetSprites(this);
+        }
+
+        public TileModifier GetModifierOfType<T>(){
+            foreach(TileModifier modifier in TileModifiers){
+                if(modifier.GetType() == typeof(T)) return modifier;
+            }
+            return null;
+        }
+
+        public Sprite GetSprite(string name){
+            if(!sprites.ContainsKey(name)) {
+                Debug.Log("Sprite not found " + name);
+                return null;
+            }
+            return sprites[name];
         }
     }
 }

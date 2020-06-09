@@ -8,8 +8,9 @@ public class ProceduralGenerator : MonoBehaviour
     public GameObject player;
     public WorldGenerator generator;
     public Chunk[,] world;
-    public int chunkSize = 16;
-    public int chunkAmount = 5;
+    public int chunkSize ;
+    public int loadWidth;
+    public int loadHeight;
     public int collisionRadius;
 
     Vector2 prevPlayerPos;
@@ -17,20 +18,19 @@ public class ProceduralGenerator : MonoBehaviour
     bool worldIsGenerated = false;
 
     void TranslateChunks(Vector2 dir){
-        int x = (dir.x == -1 ? chunkAmount - 1 : 0);
-        while(x >= 0 && x < chunkAmount){
-            int y = (dir.y == -1 ? chunkAmount - 1 : 0);
-            while(y >= 0 && y < chunkAmount){
-                if(((x == 0 && dir.x == 1) || (x == chunkAmount - 1 && dir.x == -1)) || 
-                   ((y == 0 && dir.y == 1) || (y == chunkAmount - 1 && dir.y == -1))) {
+        int x = (dir.x == -1 ? loadWidth - 1 : 0);
+        while(x >= 0 && x < loadWidth){
+            int y = (dir.y == -1 ? loadHeight - 1 : 0);
+            while(y >= 0 && y < loadHeight){
+                if(((x == 0 && dir.x == 1) || (x == loadWidth - 1 && dir.x == -1)) || 
+                   ((y == 0 && dir.y == 1) || (y == loadHeight - 1 && dir.y == -1))) {
                        StartCoroutine(world[x, y].DestroyChunk());
                        if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Saved;
-                       //WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x,y]);
                        world[x,y] = null;
                 } else {
                     world[x - (int)dir.x, y - (int)dir.y] = world[x,y];
-                    if(((x == 0 && dir.x == -1) || (x == chunkAmount - 1 && dir.x == 1)) || 
-                       ((y == 0 && dir.y == -1) || (y == chunkAmount - 1 && dir.y == 1))){
+                    if(((x == 0 && dir.x == -1) || (x == loadWidth - 1 && dir.x == 1)) || 
+                       ((y == 0 && dir.y == -1) || (y == loadHeight - 1 && dir.y == 1))){
                             world[x,y] = null;
                     }
                 }
@@ -42,17 +42,17 @@ public class ProceduralGenerator : MonoBehaviour
 
     void Start() {
         Chunk.chunkSize = chunkSize;
-        world = new Chunk[chunkAmount, chunkAmount];
-        for(int x = 0; x < chunkAmount; ++x){
-            for(int y = 0; y < chunkAmount; ++y){
+        world = new Chunk[loadWidth, loadHeight];
+        for(int x = 0; x < loadWidth; ++x){
+            for(int y = 0; y < loadHeight; ++y){
                 world[x,y] = null;
             }
         }
         int xp = (int)player.transform.position.x / chunkSize;
         int yp = (int)player.transform.position.y / chunkSize;
-        for(int x = 0; x < chunkAmount; ++x){
-            for(int y = 0; y < chunkAmount; ++y){
-                world[x, y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
+        for(int x = 0; x < loadWidth; ++x){
+            for(int y = 0; y < loadHeight; ++y){
+                world[x, y] = new Chunk(xp + x - loadWidth / 2, yp + y - loadHeight / 2);
                 WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x, y]);
             }
         }
@@ -62,14 +62,14 @@ public class ProceduralGenerator : MonoBehaviour
     }
 
     void GenerateNewTerrain(int xp, int yp){
-        for(int x = 0; x < chunkAmount; ++x){
-            for(int y = 0; y < chunkAmount; ++y){
+        for(int x = 0; x < loadWidth; ++x){
+            for(int y = 0; y < loadHeight; ++y){
                 if(world[x,y] == null){
-                    Chunk chunk = WorldManager.GetChunk(new Vector2(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2));
+                    Chunk chunk = WorldManager.GetChunk(new Vector2(xp + x - loadWidth / 2, yp + y - loadHeight / 2));
                     if(chunk != null){
                         world[x,y] = chunk;
                     } else {
-                        world[x,y] = new Chunk(xp + x - chunkAmount / 2, yp + y - chunkAmount / 2);
+                        world[x,y] = new Chunk(xp + x - loadWidth / 2, yp + y - loadHeight / 2);
                         WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x, y]);
                     }
                 }

@@ -11,7 +11,6 @@ namespace Tiles {
         public SpriteRenderer spriteRenderer { get; private set; }
         public TileScript tileScript { get; private set; }
         public bool hasCollider;
-        Sprite[] sprites;
         TileModifier[] modifiers;
 
         UnityEvent OnDataChange;

@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Tiles {
     public class AutoTileAnimated : TileModifier {
-        int frames;
+        public int frames;
         float frameRate;
         int currFrame;
         string name;
@@ -39,7 +39,7 @@ namespace Tiles {
                 return;
             }
             name = tile.tileData.Name + tileType.ToString("");
-            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
+            tile.spriteRenderer.sprite = tile.tileData.GetSprite(name + currFrame.ToString());
             if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();
             tile.tileScript.StartCoroutine(Animator());
         }
@@ -54,7 +54,7 @@ namespace Tiles {
         public void ChangeFrame(){
             ++currFrame;
             if(currFrame >= frames) currFrame = 0;
-            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
+            tile.spriteRenderer.sprite = tile.tileData.GetSprite(name + currFrame.ToString());
         }
 
         public void StopAnimation(){
