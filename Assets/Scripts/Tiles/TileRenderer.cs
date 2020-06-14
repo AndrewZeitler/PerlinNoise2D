@@ -19,7 +19,7 @@ namespace Tiles {
         public void UpdateSprite(){
             if(!sprite){
                 int rand = Random.Range(0, tileAmounts - 1);
-                sprite = tile.tileData.GetSprite(tile.tileData.Name + rand.ToString());
+                sprite = SpriteManager.GetTileSprite(tile.tileData.Name + rand.ToString());
             }
             tile.spriteRenderer.sprite = sprite;
             if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();

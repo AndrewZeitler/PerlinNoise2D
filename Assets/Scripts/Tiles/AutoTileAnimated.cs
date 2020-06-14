@@ -34,12 +34,18 @@ namespace Tiles {
                 }
             }
             TerrainBrush.TileType tileType = TerrainBrush.GetTileType(ids, 1, 1);
+            int other = TerrainBrush.GetOtherType(ids, 1, 1, tileType);
             if(tileType == TerrainBrush.TileType.Error){
-                tile.SetTileData(TileData.GRASS);
+                tile.SetTileData(TileData.idToData[other]);
                 return;
             }
+            if(other != -1){
+                Debug.Log(tile.tileData.Name + TileData.idToData[other].Name + (int)tileType);
+            } else {
+                Debug.Log(tile.tileData.Name + "0");
+            }
             name = tile.tileData.Name + tileType.ToString("");
-            tile.spriteRenderer.sprite = tile.tileData.GetSprite(name + currFrame.ToString());
+            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
             if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();
             tile.tileScript.StartCoroutine(Animator());
         }
@@ -54,7 +60,7 @@ namespace Tiles {
         public void ChangeFrame(){
             ++currFrame;
             if(currFrame >= frames) currFrame = 0;
-            tile.spriteRenderer.sprite = tile.tileData.GetSprite(name + currFrame.ToString());
+            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
         }
 
         public void StopAnimation(){

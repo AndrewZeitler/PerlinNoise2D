@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Tiles;
+using World;
 
 public class Chunk {
     public int x;
@@ -11,6 +12,7 @@ public class Chunk {
     public Tile[,] tiles;
     public ChunkState chunkState;
     public double[,] heightMap;
+    public Biome biome;
 
     public Chunk(int x, int y){
         this.x = x;

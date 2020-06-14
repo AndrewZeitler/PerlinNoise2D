@@ -27,13 +27,13 @@ public class SpriteManager : MonoBehaviour
         Sprite[] sprites = new Sprite[tileSprites.spriteCount];
         tileSpriteSheet.GetSprites(sprites);
         foreach(Sprite sprite in sprites){
-            nameToTile[sprite.name] = sprite;
+            nameToTile[sprite.name.Replace("(Clone)", "")] = sprite;
         }
 
         sprites = new Sprite[itemSprites.spriteCount];
         itemSpriteSheet.GetSprites(sprites);
         foreach(Sprite sprite in sprites){
-            nameToItem[sprite.name] = sprite;
+            nameToItem[sprite.name.Replace("(Clone)", "")] = sprite;
         }
     }
 
@@ -92,18 +92,18 @@ public class SpriteManager : MonoBehaviour
     }
 
     public static Sprite GetTileSprite(string name){
-        if(!nameToTile.ContainsKey(name + "(Clone)")) {
+        if(!nameToTile.ContainsKey(name)) {
             Debug.Log(name);
             return null;
         }
-        return nameToTile[name + "(Clone)"];
+        return nameToTile[name];
     }
 
     public static Sprite GetItemSprite(string name){
-        if(!nameToItem.ContainsKey(name.ToLower() + "(Clone)")) {
+        if(!nameToItem.ContainsKey(name.ToLower())) {
             Debug.Log(name);
             return null;
         }
-        return nameToItem[name.ToLower() + "(Clone)"];
+        return nameToItem[name.ToLower()];
     }
 }

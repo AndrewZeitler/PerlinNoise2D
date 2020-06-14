@@ -27,7 +27,7 @@ namespace Tiles {
                 return;
             }
             tile.spriteRenderer.sortingLayerName = "Terrain";
-            tile.spriteRenderer.sprite = tile.tileData.GetSprite(tile.tileData.Name + tileType.ToString(""));
+            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(tile.tileData.Name + tileType.ToString(""));
             if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();
         }
     }

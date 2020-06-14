@@ -83,9 +83,13 @@
      <Compile Include="Assets\Scripts\UI\ItemDescriptionUI.cs" />
      <Compile Include="Assets\Scripts\UI\ItemSlotHolderUI.cs" />
      <Compile Include="Assets\Scripts\UI\ItemSlotUI.cs" />
-     <Compile Include="Assets\Scripts\World\BiomeGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\Biome.cs" />
+     <Compile Include="Assets\Scripts\World\BiomeEnum.cs" />
      <Compile Include="Assets\Scripts\World\GeneratorModifier.cs" />
      <Compile Include="Assets\Scripts\World\GrassGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\GrasslandsGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\MountainGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\OceanGenerator.cs" />
      <Compile Include="Assets\Scripts\World\ResourceGenerator.cs" />
      <Compile Include="Assets\Scripts\World\TerrainGenerator.cs" />
      <Compile Include="Assets\Scripts\World\WorldGenerator.cs" />
