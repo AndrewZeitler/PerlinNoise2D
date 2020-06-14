@@ -10,12 +10,14 @@ public class Chunk {
     public Tile[,] terrain;
     public Tile[,] tiles;
     public ChunkState chunkState;
+    public double[,] heightMap;
 
     public Chunk(int x, int y){
         this.x = x;
         this.y = y;
         terrain = new Tile[chunkSize, chunkSize];
         tiles = new Tile[chunkSize, chunkSize];
+        heightMap = new double[chunkSize, chunkSize];
         chunkState = ChunkState.NotGenerated;
     }
 

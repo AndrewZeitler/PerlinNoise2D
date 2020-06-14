@@ -47,6 +47,8 @@ public class MenuManager : MonoBehaviour
             if(currentTab > pages.Count) currentTab = 0;
             pages[currentTab].transform.SetAsLastSibling();
             pages[currentTab].transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
+        } else {
+            Destroy(itemDescription);
         }
         inventoryOpen.Invoke();
     }

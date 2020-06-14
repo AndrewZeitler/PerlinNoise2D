@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         inventory = new Inventory(inventorySize, inventoryColumns, "Inventory");
-        inventory.AddItem(new ItemStack(ItemData.PICKAXE, 1));
+        inventory.AddItem(new ItemStack(ItemData.PICKAXE, 10));
         inventory.AddItem(new ItemStack(ItemData.SHOVEL, 1));
         inventory.AddItem(new ItemStack(ItemData.WOOD, 10));
         hotbar = MenuManager.CreateHotbar();

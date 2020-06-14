@@ -83,6 +83,12 @@
      <Compile Include="Assets\Scripts\UI\ItemDescriptionUI.cs" />
      <Compile Include="Assets\Scripts\UI\ItemSlotHolderUI.cs" />
      <Compile Include="Assets\Scripts\UI\ItemSlotUI.cs" />
+     <Compile Include="Assets\Scripts\World\BiomeGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\GeneratorModifier.cs" />
+     <Compile Include="Assets\Scripts\World\GrassGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\ResourceGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\TerrainGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\WorldGenerator.cs" />
      <Compile Include="Assets\Scripts\WorldGenerator.cs" />
      <Compile Include="Assets\Scripts\WorldManager.cs" />
  <Reference Include="Unity.Timeline.Editor">

@@ -20,12 +20,7 @@ namespace Tiles {
 
         Dictionary<string, Sprite> sprites;
 
-        public TileData(string name, int id, TileModifier[] tileModifiers) : base(name, id, tileModifiers, true) {
-            idToData.Add(id, this);
-            nameToData.Add(name, this);
-            sprites = SpriteManager.GetSprites(this);
-        }
-        public TileData(string name, int id, TileModifier[] tileModifiers, bool isWalkable) : base(name, id, tileModifiers, isWalkable) {
+        public TileData(string name, int id, TileModifier[] tileModifiers, bool isWalkable = true) : base(name, id, tileModifiers, isWalkable) {
             idToData.Add(id, this);
             nameToData.Add(name, this);
             sprites = SpriteManager.GetSprites(this);

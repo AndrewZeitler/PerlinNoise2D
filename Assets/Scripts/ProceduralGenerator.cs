@@ -6,7 +6,7 @@ using World;
 public class ProceduralGenerator : MonoBehaviour
 {
     public GameObject player;
-    public WorldGenerator generator;
+    WorldGenerator generator;
     public Chunk[,] world;
     public int chunkSize ;
     public int loadWidth;
@@ -25,7 +25,7 @@ public class ProceduralGenerator : MonoBehaviour
                 if(((x == 0 && dir.x == 1) || (x == loadWidth - 1 && dir.x == -1)) || 
                    ((y == 0 && dir.y == 1) || (y == loadHeight - 1 && dir.y == -1))) {
                        StartCoroutine(world[x, y].DestroyChunk());
-                       if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Saved;
+                       if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Generated;
                        world[x,y] = null;
                 } else {
                     world[x - (int)dir.x, y - (int)dir.y] = world[x,y];
@@ -41,6 +41,7 @@ public class ProceduralGenerator : MonoBehaviour
     }
 
     void Start() {
+        generator = new WorldGenerator();
         Chunk.chunkSize = chunkSize;
         world = new Chunk[loadWidth, loadHeight];
         for(int x = 0; x < loadWidth; ++x){
