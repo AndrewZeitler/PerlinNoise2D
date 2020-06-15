@@ -93,7 +93,7 @@ public class SpriteManager : MonoBehaviour
 
     public static Sprite GetTileSprite(string name){
         if(!nameToTile.ContainsKey(name)) {
-            Debug.Log(name);
+            //Debug.Log(name);
             return null;
         }
         return nameToTile[name];
@@ -101,7 +101,7 @@ public class SpriteManager : MonoBehaviour
 
     public static Sprite GetItemSprite(string name){
         if(!nameToItem.ContainsKey(name.ToLower())) {
-            Debug.Log(name);
+            //Debug.Log(name);
             return null;
         }
         return nameToItem[name.ToLower()];

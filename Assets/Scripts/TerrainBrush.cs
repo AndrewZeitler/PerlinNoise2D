@@ -114,7 +114,7 @@ public class TerrainBrush {
         } else if(type == TileType.TopLeftL || type == TileType.TopLeft || type == TileType.LeftDiagonal){
             return ids[x + 1, y - 1];
         } else if(type == TileType.Left){
-            return ids[x - 1, y];
+            return ids[x + 1, y];
         } else if(type == TileType.Top){
             return ids[x, y - 1];
         } else if(type == TileType.Error){

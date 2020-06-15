@@ -10,7 +10,7 @@ namespace World {
             for(int x = 0; x < Chunk.chunkSize; ++x){
                 for(int y = 0; y < Chunk.chunkSize; ++y){
                     if(chunk.heightMap[x,y] <= Biome.GRASSLANDS.MinHeight) {
-                        chunk.terrain[x,y].SetTileData(TileData.WATER);
+                        chunk.terrain[x,y].SetTileData(TileData.SAND);
                     } else if(chunk.heightMap[x,y] >= Biome.GRASSLANDS.MaxHeight - 0.05){
                         chunk.terrain[x,y].SetTileData(TileData.DIRT);
                     } else {

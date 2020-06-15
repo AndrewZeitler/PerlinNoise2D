@@ -8,6 +8,7 @@ namespace Tiles {
         float frameRate;
         int currFrame;
         string name;
+        int inc = 1;
 
         public AutoTileAnimated(int frames, float frameRate){
             this.frames = frames;
@@ -28,9 +29,9 @@ namespace Tiles {
             for(int x = 0; x < 3; ++x){
                 for(int y = 0; y < 3; ++y){
                     ids[x, y] = grid[x, y].tileData.Id;
-                    if(x != 1 || y != 1){
-                        grid[x, y].AddDataChangeListener(UpdateSprite);
-                    }
+                    // if(x != 1 || y != 1){
+                    //     grid[x, y].AddDataChangeListener(UpdateSprite);
+                    // }
                 }
             }
             TerrainBrush.TileType tileType = TerrainBrush.GetTileType(ids, 1, 1);
@@ -40,12 +41,16 @@ namespace Tiles {
                 return;
             }
             if(other != -1){
-                Debug.Log(tile.tileData.Name + TileData.idToData[other].Name + (int)tileType);
+                name = tile.tileData.Name + TileData.idToData[other].Name + (int)tileType;
             } else {
-                Debug.Log(tile.tileData.Name + "0");
+                name = tile.tileData.Name + "0";
             }
-            name = tile.tileData.Name + tileType.ToString("");
-            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
+            Sprite sprite = SpriteManager.GetTileSprite(name + "_" + currFrame.ToString());
+            if(sprite == null){
+                name = tile.tileData.Name + "0";
+                sprite = SpriteManager.GetTileSprite(name + "_" + currFrame.ToString());
+            }
+            tile.spriteRenderer.sprite = sprite;
             if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();
             tile.tileScript.StartCoroutine(Animator());
         }
@@ -58,9 +63,9 @@ namespace Tiles {
         }
 
         public void ChangeFrame(){
-            ++currFrame;
-            if(currFrame >= frames) currFrame = 0;
-            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + currFrame.ToString());
+            currFrame += inc;
+            if(currFrame == frames - 1 || currFrame == 0) inc *= -1;
+            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + "_" + currFrame.ToString());
         }
 
         public void StopAnimation(){

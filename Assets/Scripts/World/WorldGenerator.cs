@@ -30,13 +30,13 @@ namespace World {
         }
 
         public static double PerlinNoise(double x, double y){
-            return generator.perlin((x + WorldGenerator.seed) / 32, (y + WorldGenerator.seed) / 32, WorldGenerator.seed / 10000000);
+            return generator.perlin((x + WorldGenerator.seed) / 64, (y + WorldGenerator.seed) / 64, WorldGenerator.seed / 10000000);
         }
 
         public void LoadChunks(Chunk[,] chunks){
             for(int x = 0; x < chunks.GetLength(0); ++x){
                 for(int y = 0; y < chunks.GetLength(1); ++y){
-                    LogPerlin(chunks[x, y]);
+                    //LogPerlin(chunks[x, y]);
                     GenerateHeight(chunks[x, y]);
                     chunks[x,y].biome = GetBiome(chunks[x,y]);
                 }
