@@ -4,19 +4,15 @@ using UnityEngine;
 
 namespace World {
 
-    public class ResourceGenerator : GeneratorModifier {
+    public class VariationGenerator : GeneratorModifier {
 
         TileData tileData;
         HashSet<int> spawnIds;
-        Vector2 height;
         float spawnChance;
-        float veinChance;
 
-        public ResourceGenerator(int priority, TileData tileData, Vector2 height, float spawnChance, float veinChance, TileData[] spawnTiles) : base(priority) {
+        public VariationGenerator(int priority, TileData tileData, float spawnChance, TileData[] spawnTiles) : base(priority) {
             this.tileData = tileData;
-            this.height = height;
             this.spawnChance = spawnChance;
-            this.veinChance = veinChance;
             spawnIds = new HashSet<int>();
             foreach(TileData tile in spawnTiles) { spawnIds.Add(tile.Id); }
         }
@@ -25,13 +21,8 @@ namespace World {
             for(int x = 0; x < Chunk.chunkSize; ++x){
                 for(int y = 0; y < Chunk.chunkSize; ++y){
                     if(!spawnIds.Contains(chunk.terrain[x, y].tileData.Id)) continue;
-                    //if(chunk.tiles[x,y].tileData.Id != 0) continue;
-                    double rand = chunk.heightMap[x, y];
-                    if(rand > height.x && rand < height.y){
-                        rand = Random.value;
-                        if(rand < veinChance){
-                            chunk.tiles[x,y].SetTileData(tileData);
-                        }
+                    double rand = Random.value;
+                    if(rand < spawnChance){
                         chunk.tiles[x,y].SetTileData(tileData);
                     }
                 }

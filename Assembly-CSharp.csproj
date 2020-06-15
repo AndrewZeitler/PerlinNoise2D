@@ -81,6 +81,8 @@
      <Compile Include="Assets\Scripts\World\MountainGenerator.cs" />
      <Compile Include="Assets\Scripts\World\OceanGenerator.cs" />
      <Compile Include="Assets\Scripts\World\ResourceGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\TreeGenerator.cs" />
+     <Compile Include="Assets\Scripts\World\VariationGenerator.cs" />
      <Compile Include="Assets\Scripts\World\WorldGenerator.cs" />
      <Compile Include="Assets\Scripts\WorldGenerator.cs" />
      <Compile Include="Assets\Scripts\WorldManager.cs" />
