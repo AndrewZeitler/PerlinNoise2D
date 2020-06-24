@@ -12,6 +12,7 @@ public class Chunk {
     public Tile[,] tiles;
     public ChunkState chunkState;
     public double[,] heightMap;
+    public double averageHeight;
     public Biome biome;
 
     public Chunk(int x, int y){

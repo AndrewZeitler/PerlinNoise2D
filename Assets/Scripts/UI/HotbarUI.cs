@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class HotbarUI : ItemSlotHolderUI
 {
-    private int selectedSlot = 0;
+    Hotbar hotbar;
 
-    public override void CreateUI(Inventory inventory, GameObject slotPrefab){
-        this.inventory = inventory;
+    public void CreateUI(Hotbar hotbar, GameObject slotPrefab){
+        this.hotbar = hotbar;
 
         float aspectRatio = Screen.width / (float)Screen.height;
 
@@ -16,32 +16,32 @@ public class HotbarUI : ItemSlotHolderUI
         uiTransform.anchorMin = new Vector2(1f - 0.10f / aspectRatio, 0.05f);
         uiTransform.anchorMax = new Vector2(1f, 0.95f);
 
-        for(int i = 0; i < inventory.GetInventorySize(); ++i){
+        for(int i = 0; i < hotbar.inventory.GetInventorySize(); ++i){
             GameObject slot = Instantiate(slotPrefab);
             slot.transform.SetParent(transform);
             slot.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             slot.AddComponent<ItemSlotUI>().index = i;
             RectTransform slotTransform = slot.GetComponent<RectTransform>();
             slotTransform.offsetMin = slotTransform.offsetMax = Vector3.zero;
-            slotTransform.anchorMin = new Vector2(0, 1f - (1f / inventory.GetInventorySize()) * (i + 1));
-            slotTransform.anchorMax = new Vector2(1, 1f - (1f / inventory.GetInventorySize()) * i);
+            slotTransform.anchorMin = new Vector2(0, 1f - (1f / hotbar.inventory.GetInventorySize()) * (i + 1));
+            slotTransform.anchorMax = new Vector2(1, 1f - (1f / hotbar.inventory.GetInventorySize()) * i);
         }
 
         uiTransform.offsetMin = uiTransform.offsetMax = Vector2.zero;
         InventoryChanged();
-        inventory.AddListener(InventoryChanged);
+        hotbar.inventory.AddListener(InventoryChanged);
         MenuManager.AddInventoryOpenListener(InventoryOpened);
     }
 
     public override void InventoryChanged(){
         for(int i = 0; i < transform.childCount; ++i){
-            ItemStack item = inventory.GetItemStackAt(i);
+            ItemStack item = hotbar.inventory.GetItemStackAt(i);
             Image image = transform.GetChild(i).GetChild(0).GetComponent<Image>();
             Text text = transform.GetChild(i).GetChild(1).GetComponent<Text>();
             transform.GetChild(i).GetComponent<ItemSlotUI>().itemStack = item;
             transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 0.7f);
             if(item != null){
-                image.sprite = SpriteManager.GetItemSprite(item.GetItem().itemData.Name);
+                image.sprite = item.GetItem().itemData.ItemSprite;
                 image.color = new Color(1, 1, 1, 0.7f);
                 text.color = new Color(1, 1, 1, 0.7f);
                 if(item.GetAmount() > 1){
@@ -54,7 +54,7 @@ public class HotbarUI : ItemSlotHolderUI
                 image.color = new Color(1, 1, 1, 0);
                 text.text = "";
             }
-            if(i == selectedSlot){
+            if(i == hotbar.selectedSlot){
                 transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
                 if(item != null){
                     image.color = new Color(1, 1, 1, 1);
@@ -70,12 +70,12 @@ public class HotbarUI : ItemSlotHolderUI
             item = heldItem.GetComponent<HeldItem>().itemStack;
         }
         int slotIndex = clickedSlot.GetComponent<ItemSlotUI>().index;
-        if(inventory.GetItemStackAt(slotIndex) == null){
-            inventory.AddItemAt(slotIndex, item);
+        if(hotbar.inventory.GetItemStackAt(slotIndex) == null){
+            hotbar.inventory.AddItemAt(slotIndex, item);
             return null;
         } else {
-            ItemStack newHeldItem = inventory.RemoveItemAt(slotIndex);
-            inventory.AddItemAt(slotIndex, item);
+            ItemStack newHeldItem = hotbar.inventory.RemoveItemAt(slotIndex);
+            hotbar.inventory.AddItemAt(slotIndex, item);
             return newHeldItem;
         }
     }
@@ -92,7 +92,7 @@ public class HotbarUI : ItemSlotHolderUI
     }
 
     public ItemStack GetHeldItem(){
-        return inventory.GetItemStackAt(selectedSlot);
+        return hotbar.inventory.GetItemStackAt(hotbar.selectedSlot);
     }
 
     // Update is called once per frame
@@ -101,12 +101,12 @@ public class HotbarUI : ItemSlotHolderUI
         float scroll = Input.mouseScrollDelta.y;
         if(scroll != 0f){
             if(scroll > 0f){
-                selectedSlot += 1;
+                hotbar.selectedSlot += 1;
             } else {
-                selectedSlot -= 1;
+                hotbar.selectedSlot -= 1;
             }
-            if(selectedSlot < 0) selectedSlot = inventory.GetInventorySize() - 1;
-            if(selectedSlot >= inventory.GetInventorySize()) selectedSlot = 0;
+            if(hotbar.selectedSlot < 0) hotbar.selectedSlot = hotbar.inventory.GetInventorySize() - 1;
+            if(hotbar.selectedSlot >= hotbar.inventory.GetInventorySize()) hotbar.selectedSlot = 0;
             InventoryChanged();
         }
     }

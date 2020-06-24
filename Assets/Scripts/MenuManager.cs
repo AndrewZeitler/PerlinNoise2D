@@ -93,13 +93,11 @@ public class MenuManager : MonoBehaviour
         return true;
     }
 
-    public static HotbarUI CreateHotbar(){
+    public static void CreateHotbar(Hotbar inv){
         GameObject content = RectTransform.Instantiate(emptyPrefab);
         content.transform.SetParent(menu.transform.parent);
         hotbar = content.AddComponent<HotbarUI>();
-        Inventory inv = new Inventory(9, 1, "Hotbar");
         hotbar.CreateUI(inv, slotPrefab);
-        return hotbar;
     }
 
     public static void OnTabClick(GameObject click){
@@ -149,13 +147,11 @@ public class MenuManager : MonoBehaviour
     }
 
     public static void ItemSlotEnter(PointerEventData pointer, GameObject itemSlot){
-        Debug.Log("Enter");
         if(heldItem != null) return;
         CreateItemDescription(itemSlot.GetComponent<ItemSlotUI>().itemStack);
     }
 
     public static void ItemSlotExit(PointerEventData pointer, GameObject itemSlot){
-        Debug.Log("Exit");
         Destroy(itemDescription);
     }
 

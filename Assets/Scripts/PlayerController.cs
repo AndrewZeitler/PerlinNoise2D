@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Items;
+﻿using UnityEngine;
+using World;
+using Tiles;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,30 +9,62 @@ public class PlayerController : MonoBehaviour
     public float range;
     public int inventorySize;
     public int inventoryColumns;
-    private Rigidbody2D body;
-    private SpriteRenderer spriteRenderer;
-    private Inventory inventory;
-    private HotbarUI hotbar;
-    private bool prevInteract = false;
+    Rigidbody2D body;
+    SpriteRenderer spriteRenderer;
+    bool prevInteract = false;
+    int prevButton = -1;
+    Vector2Int prevMouse;
+    
 
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        inventory = new Inventory(inventorySize, inventoryColumns, "Inventory");
-        inventory.AddItem(new ItemStack(ItemData.PICKAXE, 10));
-        inventory.AddItem(new ItemStack(ItemData.SHOVEL, 1));
-        inventory.AddItem(new ItemStack(ItemData.WOOD, 10));
-        hotbar = MenuManager.CreateHotbar();
-        MenuManager.AddComponentDisplay(inventory);
-        MenuManager.AddComponentDisplay(new Inventory(inventorySize, inventoryColumns, "Test"));
     }
 
-    void FixedUpdate()
-    {
+    void Update() {
+        if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)){
+            int button = (Input.GetMouseButtonDown(0) ? 0 : 1);
+            Debug.Log(button);
+            Vector3 mouse = new Vector3((int)Input.mousePosition.x, (int)Input.mousePosition.y);
+            mouse.z = Camera.main.transform.position.z;
+            mouse = Camera.main.ScreenToWorldPoint(mouse);
+            Vector2Int worldMouse = new Vector2Int(Mathf.FloorToInt(mouse.x + 0.5f), Mathf.FloorToInt(mouse.y + 0.5f));
+            if(prevButton != -1 && (!worldMouse.Equals(prevMouse) || prevButton != button)){
+                Tile prevTile = WorldManager.GetTile(prevMouse);
+                if(prevButton == 0){
+                    prevTile.ReleaseAttackEvent(WorldManager.player);
+                } else {
+                    prevTile.ReleaseInteractEvent(WorldManager.player);
+                }
+            }
+            Tile tile = WorldManager.GetTile(worldMouse);
+            Debug.Log(tile.tileData.Name);
+            if(button == 0){
+                tile.OnAttackEvent(WorldManager.player);
+            } else {
+                tile.OnInteractEvent(WorldManager.player);
+            }
+            prevMouse = worldMouse;
+            prevButton = button;
+        }
+
+        if(Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)){
+            Tile tile = WorldManager.GetTile(prevMouse);
+            if(prevButton == 0){
+                tile.ReleaseAttackEvent(WorldManager.player);
+            } else {
+                tile.ReleaseInteractEvent(WorldManager.player);
+            }
+            prevButton = -1;
+        }
+    }
+
+    void FixedUpdate() {
         if(prevInteract == false && Input.GetButton("Interact") == true){
             MenuManager.ToggleMenu();
             prevInteract = true;
+            body.velocity = Vector2.zero;
         } else if(prevInteract == true && Input.GetButton("Interact") == false) prevInteract = false;
         if(!MenuManager.IsMenuActive()){
             float speed = movementSpeed;

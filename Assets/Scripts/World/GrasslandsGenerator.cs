@@ -6,17 +6,11 @@ namespace World {
 
         public GrasslandsGenerator(int priority) : base(priority){}
 
-        public override void OnGenerate(Chunk chunk){
-            for(int x = 0; x < Chunk.chunkSize; ++x){
-                for(int y = 0; y < Chunk.chunkSize; ++y){
-                    if(chunk.heightMap[x,y] <= Biome.GRASSLANDS.MinHeight) {
-                        chunk.terrain[x,y].SetTileData(TileData.SAND);
-                    } else if(chunk.heightMap[x,y] >= Biome.GRASSLANDS.MaxHeight - 0.05){
-                        chunk.terrain[x,y].SetTileData(TileData.DIRT);
-                    } else {
-                        chunk.terrain[x,y].SetTileData(TileData.GRASS);
-                    }
-                }
+        public override void OnGenerate(Chunk chunk, int x, int y){
+            if(chunk.heightMap[x, y] > Biome.GRASSLANDS.Height.max - 0.05){
+                chunk.terrain[x,y].SetTileData(TileData.DIRT);
+            } else {
+                chunk.terrain[x,y].SetTileData(TileData.GRASS);
             }
         }
 

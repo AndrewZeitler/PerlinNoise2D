@@ -21,20 +21,16 @@ namespace World {
             foreach(TileData tile in spawnTiles) { spawnIds.Add(tile.Id); }
         }
 
-        public override void AfterGenerate(Chunk chunk){
-            for(int x = 0; x < Chunk.chunkSize; ++x){
-                for(int y = 0; y < Chunk.chunkSize; ++y){
-                    if(!spawnIds.Contains(chunk.terrain[x, y].tileData.Id)) continue;
-                    //if(chunk.tiles[x,y].tileData.Id != 0) continue;
-                    double rand = chunk.heightMap[x, y];
-                    if(rand > height.x && rand < height.y){
-                        rand = Random.value;
-                        if(rand < veinChance){
-                            chunk.tiles[x,y].SetTileData(tileData);
-                        }
-                        chunk.tiles[x,y].SetTileData(tileData);
-                    }
+        public override void AfterGenerate(Chunk chunk, int x, int y){
+            if(!spawnIds.Contains(chunk.terrain[x, y].tileData.Id)) return;
+            //if(chunk.tiles[x,y].tileData.Id != 0) continue;
+            double rand = chunk.heightMap[x, y];
+            if(rand > height.x && rand < height.y){
+                rand = Random.value;
+                if(rand < veinChance){
+                    chunk.tiles[x,y].SetTileData(tileData);
                 }
+                chunk.tiles[x,y].SetTileData(tileData);
             }
         }
 

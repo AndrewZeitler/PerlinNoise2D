@@ -17,15 +17,11 @@ namespace World {
             foreach(TileData tile in spawnTiles) { spawnIds.Add(tile.Id); }
         }
 
-        public override void AfterGenerate(Chunk chunk){
-            for(int x = 0; x < Chunk.chunkSize; ++x){
-                for(int y = 0; y < Chunk.chunkSize; ++y){
-                    if(!spawnIds.Contains(chunk.terrain[x, y].tileData.Id)) continue;
-                    double rand = Random.value;
-                    if(rand < spawnChance){
-                        chunk.tiles[x,y].SetTileData(tileData);
-                    }
-                }
+        public override void AfterGenerate(Chunk chunk, int x, int y){
+            if(!spawnIds.Contains(chunk.terrain[x, y].tileData.Id)) return;
+            double rand = Random.value;
+            if(rand < spawnChance){
+                chunk.tiles[x,y].SetTileData(tileData);
             }
         }
 

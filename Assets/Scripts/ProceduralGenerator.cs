@@ -5,10 +5,10 @@ using World;
 
 public class ProceduralGenerator : MonoBehaviour
 {
-    public GameObject player;
+    GameObject player;
     WorldGenerator generator;
     public Chunk[,] world;
-    public int chunkSize ;
+    public int chunkSize;
     public int loadWidth;
     public int loadHeight;
     public int collisionRadius;
@@ -16,6 +16,7 @@ public class ProceduralGenerator : MonoBehaviour
     Vector2 prevPlayerPos;
 
     bool worldIsGenerated = false;
+    bool playerCreated = false;
 
     void TranslateChunks(Vector2 dir){
         int x = (dir.x == -1 ? loadWidth - 1 : 0);
@@ -40,7 +41,7 @@ public class ProceduralGenerator : MonoBehaviour
         }
     }
 
-    void Start() {
+    public void Initialize() {
         generator = new WorldGenerator();
         Chunk.chunkSize = chunkSize;
         world = new Chunk[loadWidth, loadHeight];
@@ -49,17 +50,29 @@ public class ProceduralGenerator : MonoBehaviour
                 world[x,y] = null;
             }
         }
-        int xp = (int)player.transform.position.x / chunkSize;
-        int yp = (int)player.transform.position.y / chunkSize;
         for(int x = 0; x < loadWidth; ++x){
             for(int y = 0; y < loadHeight; ++y){
-                world[x, y] = new Chunk(xp + x - loadWidth / 2, yp + y - loadHeight / 2);
+                world[x, y] = new Chunk(x - loadWidth / 2, y - loadHeight / 2);
                 WorldManager.AddChunk(new Vector2(world[x, y].x, world[x, y].y), world[x, y]);
             }
         }
         generator.LoadChunks(world);
-        prevPlayerPos = new Vector2(xp, yp);
         worldIsGenerated = true;
+    }
+
+    public void SetPlayer(GameObject player){
+        this.player = player;
+        int xp = (int)player.transform.position.x / chunkSize;
+        int yp = (int)player.transform.position.y / chunkSize;
+        prevPlayerPos = new Vector2(xp, yp);
+        for(int x = 0; x < loadWidth; ++x){
+            for(int y = 0; y < loadHeight; ++y){
+                //StartCoroutine(world[x, y].DestroyChunk());
+                world[x, y] = null;
+            }
+        }
+        GenerateNewTerrain(xp, yp);
+        playerCreated = true;
     }
 
     void GenerateNewTerrain(int xp, int yp){
@@ -107,7 +120,7 @@ public class ProceduralGenerator : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!worldIsGenerated) return;
+        if(!worldIsGenerated || !playerCreated) return;
         //UpdateColliders(player.transform.position.x, player.transform.position.y);
         int xp = (int)Mathf.Floor(player.transform.position.x / Chunk.chunkSize);
         int yp = (int)Mathf.Floor(player.transform.position.y / Chunk.chunkSize);

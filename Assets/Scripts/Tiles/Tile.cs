@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Events;
+using Entities;
 
 namespace Tiles {
     public class Tile {
@@ -16,15 +15,19 @@ namespace Tiles {
         UnityEvent OnDataChange;
         UnityEvent OnObjectCreated;
         UnityEvent OnObjectDestroyed;
-        PlayerEvent OnAttack;
-        PlayerEvent OnInteract;
+        EntityEvent OnAttack;
+        EntityEvent OnInteract;
+        EntityEvent ReleaseAttack;
+        EntityEvent ReleaseInteract;
 
         public Tile(TileData tileData){
             OnObjectCreated = new UnityEvent();
             OnObjectDestroyed = new UnityEvent();
             OnDataChange = new UnityEvent();
-            OnAttack = new PlayerEvent();
-            OnInteract = new PlayerEvent();
+            OnAttack = new EntityEvent();
+            OnInteract = new EntityEvent();
+            ReleaseAttack = new EntityEvent();
+            ReleaseInteract = new EntityEvent();
             this.tileData = tileData;
             hasCollider = false;
             InitializeModifiers();
@@ -79,20 +82,36 @@ namespace Tiles {
             OnDataChange.AddListener(listener);
         }
 
-        public void AddAttackListener(UnityAction<PlayerController> listener){
+        public void AddAttackListener(UnityAction<Entity> listener){
             OnAttack.AddListener(listener);
         }
 
-        public void AddInteractListener(UnityAction<PlayerController> listener){
+        public void AddInteractListener(UnityAction<Entity> listener){
             OnInteract.AddListener(listener);
         }
 
-        public void OnAttackEvent(PlayerController player){
-            OnAttack.Invoke(player);
+        public void AddReleaseAttackListener(UnityAction<Entity> listener){
+            ReleaseAttack.AddListener(listener);
         }
 
-        public void OnInteractEvent(PlayerController player){
+        public void AddReleaseInteractListener(UnityAction<Entity> listener){
+            ReleaseInteract.AddListener(listener);
+        }
 
+        public void OnAttackEvent(Entity entity){
+            OnAttack.Invoke(entity);
+        }
+
+        public void OnInteractEvent(Entity entity){
+            OnInteract.Invoke(entity);
+        }
+
+        public void ReleaseAttackEvent(Entity entity){
+            ReleaseAttack.Invoke(entity);
+        }
+
+        public void ReleaseInteractEvent(Entity entity){
+            ReleaseInteract.Invoke(entity);
         }
 
         public void DestroyTile(){

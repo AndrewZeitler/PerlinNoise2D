@@ -537,9 +537,7 @@ SpriteAtlas:
   - {fileID: 5272040218958064946, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -7582206684034428104, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -5402375199913990247, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
-  - {fileID: -5903695914527701743, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 7153457633339233116, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
-  - {fileID: -259155165097210321, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 3848164442510939706, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -2452143638467626234, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -2212236894226741039, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
@@ -558,7 +556,6 @@ SpriteAtlas:
   - {fileID: -6578848342960097829, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 4006120268442377683, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 1849490947930992978, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
-  - {fileID: 1215233583730180832, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 5096373783942443945, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 8414846276711250105, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -4269272866337410598, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
@@ -675,6 +672,9 @@ SpriteAtlas:
   - {fileID: -2169700957799812560, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -8959087967722729692, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -2183218922284745925, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
+  - {fileID: 1215233583730180832, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
+  - {fileID: -5903695914527701743, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
+  - {fileID: -259155165097210321, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: -5080484574054227240, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 7609452334281497406, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
   - {fileID: 797701167787975681, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
@@ -1847,9 +1847,7 @@ SpriteAtlas:
   - terrain_87
   - stonegrass6
   - stonegrass7
-  - terrain_89
   - stone2
-  - terrain_88
   - stone3
   - stone0
   - stone1
@@ -1868,7 +1866,6 @@ SpriteAtlas:
   - terrain_63
   - terrain_93
   - terrain_62
-  - terrain_90
   - terrain_61
   - terrain_91
   - terrain_60
@@ -1985,6 +1982,9 @@ SpriteAtlas:
   - terrain_382
   - sandgrass11
   - terrain_383
+  - deadgrass2
+  - deadgrass1
+  - deadgrass0
   - grass9
   - grass8
   - grass5

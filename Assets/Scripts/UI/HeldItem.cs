@@ -17,7 +17,7 @@ public class HeldItem : MonoBehaviour
 
     public void SetItemStack(ItemStack itemStack){
         this.itemStack = itemStack;
-        transform.GetChild(0).GetComponent<Image>().sprite = SpriteManager.GetItemSprite(itemStack.GetItem().itemData.Name);
+        transform.GetChild(0).GetComponent<Image>().sprite = itemStack.GetItem().itemData.ItemSprite;
         transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 1);
         if(itemStack.GetAmount() > 1){
             transform.GetChild(1).GetComponent<Text>().text = itemStack.GetAmount().ToString();

@@ -4,5 +4,5 @@ using UnityEngine.Events;
 
 namespace Events
 {
-    class PlayerEvent : UnityEvent<PlayerController> {}
+    class EntityEvent : UnityEvent<Entities.Entity> {}
 }

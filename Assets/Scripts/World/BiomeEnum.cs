@@ -1,17 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
+using Utils;
 
 namespace World {
     public abstract class BiomeEnum {
         public BiomeType Type { get; }
-        public double MinHeight { get; }
-        public double MaxHeight { get; }
+        public Range Height { get; }
         public List<GeneratorModifier> Modifiers;
 
-        protected BiomeEnum(BiomeType type, double minHeight, double maxHeight, List<GeneratorModifier> modifiers){
+        protected BiomeEnum(BiomeType type, Range height, List<GeneratorModifier> modifiers){
             Type = type;
-            MinHeight = minHeight;
-            MaxHeight = maxHeight;
+            Height = height;
             Modifiers = modifiers;
             Modifiers.Sort(GeneratorModifier.Compare);
         }
