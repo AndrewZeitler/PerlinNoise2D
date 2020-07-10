@@ -11,38 +11,60 @@ namespace Items {
 
         ItemModifier[] modifiers;
 
-        EntityEvent OnLeftClick;
-        EntityEvent OnRightClick;
+        ItemUseEvent OnLeftClick;
+        ItemUseEvent OnRightClick;
+        ItemUseEvent ReleaseLeftClick;
+        ItemUseEvent ReleaseRightClick;
 
         public Item(ItemData itemData){
             this.itemData = itemData;
 
-            OnLeftClick = new EntityEvent();
-            OnRightClick = new EntityEvent();
+            OnLeftClick = new ItemUseEvent();
+            OnRightClick = new ItemUseEvent();
+            ReleaseLeftClick = new ItemUseEvent();
+            ReleaseRightClick = new ItemUseEvent();
+
+            InitializeModifiers();
         }
 
         public void InitializeModifiers(){
             modifiers = new ItemModifier[itemData.ItemModifiers.Length];
             for(int i = 0; i < modifiers.Length; ++i){
                 modifiers[i] = itemData.ItemModifiers[i].Clone();
-                modifiers[i].Intiailize(this);
+                modifiers[i].Initialize(this);
             }
         }
 
-        public void AddLeftClickListener(UnityAction<Entity> listener){
+        public void AddLeftClickListener(UnityAction<Entity, Vector3> listener){
             OnLeftClick.AddListener(listener);
         }
 
-        public void AddRightClickListener(UnityAction<Entity> listener){
+        public void AddRightClickListener(UnityAction<Entity, Vector3> listener){
             OnRightClick.AddListener(listener);
         }
 
-        public void OnLeftClickEvent(Entity entity){
-            OnLeftClick.Invoke(entity);
+        public void AddReleaseLeftClickListener(UnityAction<Entity, Vector3> listener){
+            ReleaseLeftClick.AddListener(listener);
         }
 
-        public void OnRightClickEvent(Entity entity){
-            OnRightClick.Invoke(entity);
+        public void AddReleaseRightClickListener(UnityAction<Entity, Vector3> listener){
+            ReleaseRightClick.AddListener(listener);
+        }
+
+        public void OnLeftClickEvent(Entity entity, Vector2 pos){
+            OnLeftClick.Invoke(entity, pos);
+        }
+
+        public void OnRightClickEvent(Entity entity, Vector2 pos){
+            OnRightClick.Invoke(entity, pos);
+        }
+
+        public void ReleaseLeftClickEvent(Entity entity, Vector2 pos){
+            ReleaseLeftClick.Invoke(entity, pos);
+        }
+
+        public void ReleaseRightClickEvent(Entity entity, Vector2 pos){
+            ReleaseRightClick.Invoke(entity, pos);
         }
 
         public ItemModifier GetModifierOfType<T>(){

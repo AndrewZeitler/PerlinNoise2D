@@ -11,7 +11,9 @@ namespace Entities {
             this.name = name;
         }
 
-        public abstract bool AddItem(ItemStack itemStack);
+        public virtual bool AddItem(ItemStack itemStack) {
+            return inventory.AddItem(itemStack);
+        }
 
     }
 

@@ -9,7 +9,7 @@ namespace Items {
 
         public ItemStack GetDrop(){
             int rand = UnityEngine.Random.Range(0, loot.Length);
-            return loot[rand];
+            return new ItemStack(loot[rand].GetItem(), loot[rand].GetAmount());
         }
 
     }

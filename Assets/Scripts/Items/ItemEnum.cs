@@ -24,6 +24,10 @@ namespace Items {
             return (Name.Equals(other.Name));
         }
 
+        public static int Compare(ItemEnum obj, ItemEnum other){
+            return obj.Id.CompareTo(other.Id);
+        }
+
         public override int GetHashCode(){
             return Name.GetHashCode();
         }

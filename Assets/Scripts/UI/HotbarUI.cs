@@ -1,112 +1,96 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using Entities;
+using UI.Elements;
 
-public class HotbarUI : ItemSlotHolderUI
-{
-    Hotbar hotbar;
+namespace UI {
+    public class HotbarUI {
+        GameObject hotbar;
+        Inventory inventory;
+        int selectedSlot;
+        public void CreateUI(Player player){
+            this.inventory = player.inventory;
+            selectedSlot = player.selectedSlot;
 
-    public void CreateUI(Hotbar hotbar, GameObject slotPrefab){
-        this.hotbar = hotbar;
+            GameObject slotPrefab = Resources.Load("Prefabs/ItemSlot") as GameObject;
 
-        float aspectRatio = Screen.width / (float)Screen.height;
+            float aspectRatio = Screen.width / (float)Screen.height;
 
-        RectTransform uiTransform = GetComponent<RectTransform>();
-        uiTransform.anchorMin = new Vector2(1f - 0.10f / aspectRatio, 0.05f);
-        uiTransform.anchorMax = new Vector2(1f, 0.95f);
+            hotbar = new GameObject();
+            RectTransform uiTransform = hotbar.AddComponent<RectTransform>();
+            uiTransform.anchorMin = new Vector2(1f - HotbarSlotUI.SLOT_SIZE.x, 0.05f);
+            uiTransform.anchorMax = new Vector2(1f, 0.95f);
+            hotbar.transform.SetParent(MenuManager.menu.transform.parent);
 
-        for(int i = 0; i < hotbar.inventory.GetInventorySize(); ++i){
-            GameObject slot = Instantiate(slotPrefab);
-            slot.transform.SetParent(transform);
-            slot.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            slot.AddComponent<ItemSlotUI>().index = i;
-            RectTransform slotTransform = slot.GetComponent<RectTransform>();
-            slotTransform.offsetMin = slotTransform.offsetMax = Vector3.zero;
-            slotTransform.anchorMin = new Vector2(0, 1f - (1f / hotbar.inventory.GetInventorySize()) * (i + 1));
-            slotTransform.anchorMax = new Vector2(1, 1f - (1f / hotbar.inventory.GetInventorySize()) * i);
+            for(int i = 0; i < Player.HOTBAR_SIZE; ++i){
+                HotbarSlotUI itemSlot = new HotbarSlotUI(new Vector2(0, 1f - (1f / Player.HOTBAR_SIZE) * (i + 1)), i, player);
+                itemSlot.gameObject.transform.SetParent(uiTransform);
+                itemSlot.gameObject.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                RectTransform slotTransform = itemSlot.gameObject.GetComponent<RectTransform>();
+                slotTransform.offsetMin = slotTransform.offsetMax = Vector3.zero;
+                slotTransform.anchorMax = new Vector2(1, 1f - (1f / Player.HOTBAR_SIZE) * i);
+            }
+
+            uiTransform.offsetMin = uiTransform.offsetMax = Vector2.zero;
+            InventoryChanged();
+            inventory.AddListener(InventoryChanged);
+            player.AddSlotListener(OnSlotChange);
+            MenuManager.AddInventoryOpenListener(InventoryOpened);
         }
 
-        uiTransform.offsetMin = uiTransform.offsetMax = Vector2.zero;
-        InventoryChanged();
-        hotbar.inventory.AddListener(InventoryChanged);
-        MenuManager.AddInventoryOpenListener(InventoryOpened);
-    }
-
-    public override void InventoryChanged(){
-        for(int i = 0; i < transform.childCount; ++i){
-            ItemStack item = hotbar.inventory.GetItemStackAt(i);
-            Image image = transform.GetChild(i).GetChild(0).GetComponent<Image>();
-            Text text = transform.GetChild(i).GetChild(1).GetComponent<Text>();
-            transform.GetChild(i).GetComponent<ItemSlotUI>().itemStack = item;
-            transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 0.7f);
-            if(item != null){
-                image.sprite = item.GetItem().itemData.ItemSprite;
-                image.color = new Color(1, 1, 1, 0.7f);
-                text.color = new Color(1, 1, 1, 0.7f);
-                if(item.GetAmount() > 1){
-                    text.text = item.GetAmount().ToString();
+        public void InventoryChanged(){
+            for(int i = 0; i < hotbar.transform.childCount; ++i){
+                ItemStack item = inventory.GetItemStackAt(i);
+                Image image = hotbar.transform.GetChild(i).GetChild(0).GetComponent<Image>();
+                Text text = hotbar.transform.GetChild(i).GetChild(1).GetComponent<Text>();
+                hotbar.transform.GetChild(i).GetComponent<ItemSlot>().itemStack = item;
+                hotbar.transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 0.7f);
+                if(item != null){
+                    image.sprite = item.GetItem().itemData.ItemSprite;
+                    image.color = new Color(1, 1, 1, 0.7f);
+                    text.color = new Color(1, 1, 1, 0.7f);
+                    if(item.GetAmount() > 1){
+                        text.text = item.GetAmount().ToString();
+                    } else {
+                        text.text = "";
+                    }
                 } else {
+                    image.sprite = null;
+                    image.color = new Color(1, 1, 1, 0);
                     text.text = "";
                 }
-            } else {
-                image.sprite = null;
-                image.color = new Color(1, 1, 1, 0);
-                text.text = "";
-            }
-            if(i == hotbar.selectedSlot){
-                transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                if(item != null){
-                    image.color = new Color(1, 1, 1, 1);
-                    text.color = new Color(1, 1, 1, 1);
+                if(i == selectedSlot){
+                    hotbar.transform.GetChild(i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                    if(item != null){
+                        image.color = new Color(1, 1, 1, 1);
+                        text.color = new Color(1, 1, 1, 1);
+                    }
                 }
             }
         }
-    }
 
-    public override ItemStack ClickSlot(GameObject heldItem, GameObject clickedSlot){
-        ItemStack item = null;
-        if(heldItem != null){
-            item = heldItem.GetComponent<HeldItem>().itemStack;
-        }
-        int slotIndex = clickedSlot.GetComponent<ItemSlotUI>().index;
-        if(hotbar.inventory.GetItemStackAt(slotIndex) == null){
-            hotbar.inventory.AddItemAt(slotIndex, item);
-            return null;
-        } else {
-            ItemStack newHeldItem = hotbar.inventory.RemoveItemAt(slotIndex);
-            hotbar.inventory.AddItemAt(slotIndex, item);
-            return newHeldItem;
-        }
-    }
-
-    public void InventoryOpened(){
-        RectTransform uiTransform = GetComponent<RectTransform>();
-        if(MenuManager.IsMenuActive()){
-            uiTransform.anchorMin = new Vector2(0.7f - (uiTransform.anchorMax.x - uiTransform.anchorMin.x), uiTransform.anchorMin.y);
-            uiTransform.anchorMax = new Vector2(0.7f, uiTransform.anchorMax.y);
-        } else {
-            uiTransform.anchorMin = new Vector2(1f - (uiTransform.anchorMax.x - uiTransform.anchorMin.x), uiTransform.anchorMin.y);
-            uiTransform.anchorMax = new Vector2(1f, uiTransform.anchorMax.y);
-        }
-    }
-
-    public ItemStack GetHeldItem(){
-        return hotbar.inventory.GetItemStackAt(hotbar.selectedSlot);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        float scroll = Input.mouseScrollDelta.y;
-        if(scroll != 0f){
-            if(scroll > 0f){
-                hotbar.selectedSlot += 1;
-            } else {
-                hotbar.selectedSlot -= 1;
+        public void ClickSlot(PointerEventData pointer, ItemSlot clickedSlot){
+            ItemStack item = null;
+            if(MenuManager.heldItem != null){
+                item = MenuManager.heldItem.GetComponent<HeldItem>().itemStack;
             }
-            if(hotbar.selectedSlot < 0) hotbar.selectedSlot = hotbar.inventory.GetInventorySize() - 1;
-            if(hotbar.selectedSlot >= hotbar.inventory.GetInventorySize()) hotbar.selectedSlot = 0;
+            MenuManager.ItemSlotClick(pointer, clickedSlot, inventory.AddItemAt(clickedSlot.index, item));
+        }
+
+        public void InventoryOpened(){
+            RectTransform uiTransform = hotbar.GetComponent<RectTransform>();
+            if(MenuManager.IsMenuActive()){
+                uiTransform.anchorMin = new Vector2(0.7f - (uiTransform.anchorMax.x - uiTransform.anchorMin.x), uiTransform.anchorMin.y);
+                uiTransform.anchorMax = new Vector2(0.7f, uiTransform.anchorMax.y);
+            } else {
+                uiTransform.anchorMin = new Vector2(1f - (uiTransform.anchorMax.x - uiTransform.anchorMin.x), uiTransform.anchorMin.y);
+                uiTransform.anchorMax = new Vector2(1f, uiTransform.anchorMax.y);
+            }
+        }
+
+        public void OnSlotChange(int slot){
+            selectedSlot = slot;
             InventoryChanged();
         }
     }

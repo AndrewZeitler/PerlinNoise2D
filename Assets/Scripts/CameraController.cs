@@ -26,29 +26,27 @@ public class CameraController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!MenuManager.IsMenuActive()){
-            float camSpeed = speed;
-            if(Input.GetAxisRaw("Fire3") > 0f) camSpeed = fastSpeed;
-            float xTranslation = Input.GetAxisRaw("Horizontal") * camSpeed;
-            float yTranslation = Input.GetAxisRaw("Vertical") * camSpeed;
-            xTranslation *= Time.deltaTime;
-            yTranslation *= Time.deltaTime;
-            float scroll = Input.mouseScrollDelta.y;
-            if(Input.GetAxisRaw("Tab") > 0 && entity != null) isFollowingEntity = !isFollowingEntity;
-            if(scroll != 0f && !isFollowingEntity){
-                if(scroll > 0f){
-                    cam.orthographicSize += scrollSpeed;
-                } else {
-                    cam.orthographicSize -= scrollSpeed;
-                }
-            }
-            if(!isFollowingEntity){
-                transform.Translate(xTranslation, yTranslation, yTranslation);
+        float camSpeed = speed;
+        if(Input.GetAxisRaw("Fire3") > 0f) camSpeed = fastSpeed;
+        float xTranslation = Input.GetAxisRaw("Horizontal") * camSpeed;
+        float yTranslation = Input.GetAxisRaw("Vertical") * camSpeed;
+        xTranslation *= Time.deltaTime;
+        yTranslation *= Time.deltaTime;
+        float scroll = Input.mouseScrollDelta.y;
+        if(Input.GetAxisRaw("Tab") > 0 && entity != null) isFollowingEntity = !isFollowingEntity;
+        if(scroll != 0f && !isFollowingEntity){
+            if(scroll > 0f){
+                cam.orthographicSize += scrollSpeed;
             } else {
-                xTranslation = entity.transform.position.x - cam.transform.position.x;
-                yTranslation = entity.transform.position.y - cam.transform.position.y;
-                transform.Translate(xTranslation, yTranslation, yTranslation);
+                cam.orthographicSize -= scrollSpeed;
             }
+        }
+        if(!isFollowingEntity){
+            transform.Translate(xTranslation, yTranslation, yTranslation);
+        } else {
+            xTranslation = entity.transform.position.x - cam.transform.position.x;
+            yTranslation = entity.transform.position.y - cam.transform.position.y;
+            transform.Translate(xTranslation, yTranslation, yTranslation);
         }
     }
 }

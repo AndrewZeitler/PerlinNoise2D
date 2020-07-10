@@ -18,7 +18,7 @@ namespace Tiles {
 
         public void UpdateSprite(){
             if(!sprite){
-                int rand = Random.Range(0, tileAmounts - 1);
+                int rand = Random.Range(0, tileAmounts);
                 sprite = SpriteManager.GetTileSprite(tile.tileData.Name + rand.ToString());
             }
             tile.spriteRenderer.sprite = sprite;

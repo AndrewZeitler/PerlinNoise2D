@@ -24,9 +24,9 @@ namespace Tiles {
             for(int x = 0; x < 3; ++x){
                 for(int y = 0; y < 3; ++y){
                     ids[x, y] = grid[x, y].tileData.Id;
-                    // if(x != 1 || y != 1){
-                    //     grid[x, y].AddDataChangeListener(UpdateSprite);
-                    // }
+                    if(x != 1 || y != 1){
+                        grid[x, y].AddDataChangeListener(UpdateSprite);
+                    }
                 }
             }
 
@@ -40,7 +40,8 @@ namespace Tiles {
 
             int other = TerrainBrush.GetOtherType(ids, 1, 1, tileType);
             if(tileType == TerrainBrush.TileType.Error){
-                //tile.SetTileData(TileData.idToData[other]);
+                // tile.SetTileData(TileData.idToData[other]);
+                // return;
                 SetTileAsCenter();
             } else {
                 string name = "";

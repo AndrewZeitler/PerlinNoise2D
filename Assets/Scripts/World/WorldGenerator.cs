@@ -7,11 +7,13 @@ namespace World {
 
     public class WorldGenerator {
 
-        public static readonly int seed = Mathf.Abs(System.Environment.TickCount / 10);
+        // public static readonly int seed = Mathf.Abs(System.Environment.TickCount / 10);
+        public static readonly int seed = 3736690;
         public static readonly PerlinNoiseGenerator generator = new PerlinNoiseGenerator();
 
         public WorldGenerator(){
             //modifiers.Sort(GeneratorModifier.Compare);
+            Debug.Log("Seed: " + seed);
             Random.InitState(seed);
         }
 

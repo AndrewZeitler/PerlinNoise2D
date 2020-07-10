@@ -1,6 +1,7 @@
 using UnityEngine;
 using Items;
 using Entities;
+using Utils;
 
 namespace Tiles {
     
@@ -8,13 +9,17 @@ namespace Tiles {
         LootTable lootTable;
         float waitTime;
         ItemData breakTool;
-        bool breaking = false;
         Entity breaker = null;
+        Coroutine coroutine = null;
+        int resourceAmount;
+        ItemData itemMain;
 
-        public ResourceBreakable(LootTable lootTable, float waitTime, ItemData breakTool){
+        public ResourceBreakable(LootTable lootTable, float waitTime, ItemData breakTool, Range resourceRange, ItemData itemMain){
             this.lootTable = lootTable;
             this.waitTime = waitTime;
             this.breakTool = breakTool;
+            resourceAmount = (int) Random.Range(resourceRange.min, resourceRange.max);
+            this.itemMain = itemMain;
         }
 
         public override void Initialize(Tile tile){
@@ -24,26 +29,36 @@ namespace Tiles {
         }
 
         public void OnInteract(Entity entity){
-            Debug.Log("Interact!");
+            if(coroutine != null) return;
             Player player = entity as Player; 
             if(player != null){
                 if(player.GetHeldItem() != null && player.GetHeldItem().GetItem().itemData == breakTool){
-                    breaking = true;
                     breaker = entity;
-                    tile.tileScript.StartCoroutine(Interacting());
+                    coroutine = tile.tileScript.StartCoroutine(Interacting());
                 }
             }
         }
 
         public void ReleaseInteract(Entity entity){
-            Debug.Log("No Interact!");
-            breaking = false;
+            if(tile == null || coroutine == null) return;
+            tile.tileScript.StopCoroutine(coroutine);
+            coroutine = null;
         }
 
         public System.Collections.IEnumerator Interacting() {
-            while(breaking){
+            while(true){
                 yield return new WaitForSeconds(waitTime);
-                if(breaking) breaker.AddItem(lootTable.GetDrop());
+                ItemStack drop = lootTable.GetDrop();
+                if(drop.GetItem().itemData == itemMain){
+                    int dropAmount = Mathf.Min(resourceAmount, drop.GetAmount());
+                    resourceAmount -= dropAmount;
+                    breaker.AddItem(new ItemStack(itemMain, dropAmount));
+                    if(resourceAmount == 0) {
+                        tile.SetTileData(TileData.AIR);
+                    }
+                } else {
+                    breaker.AddItem(drop);
+                }
             }
         }
     }

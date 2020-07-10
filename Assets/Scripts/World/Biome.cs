@@ -89,26 +89,55 @@ namespace World {
         //     GenerateTile(chunks, xChunk, yChunk, x, y);
         // }
 
+        // private void BlurChunk(Chunk[,] chunks, int xChunk, int yChunk, int x, int y){
+        //     List<Chunk> others = new List<Chunk>();
+        //     Chunk chunk = chunks[xChunk, yChunk];
+        //     if(chunks[xChunk + 1, yChunk].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk + 1, yChunk]);
+        //     if(chunks[xChunk - 1, yChunk + 1].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk - 1, yChunk + 1]);
+        //     if(chunks[xChunk, yChunk + 1].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk, yChunk + 1]);
+        //     if(chunks[xChunk + 1, yChunk + 1].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk + 1, yChunk + 1]);
+        //     double highest = chunk.averageHeight;
+        //     double lowest = chunk.averageHeight;
+        //     Biome biome = null;
+        //     foreach(Chunk other in others){
+        //         if(other.averageHeight > chunk.averageHeight && other.averageHeight > highest){
+        //             if(chunk.heightMap[x,y] > (other.averageHeight + chunk.averageHeight) / 2) {
+        //                 highest = other.averageHeight;
+        //                 biome = other.biome;
+        //             }
+        //         } else if(other.averageHeight < chunk.averageHeight && other.averageHeight < lowest){
+        //             if(chunk.heightMap[x,y] < (other.averageHeight + chunk.averageHeight) / 2) {
+        //                 lowest = other.averageHeight;
+        //                 biome = other.biome;
+        //             }
+        //         }
+        //     }
+        //     if(biome != null){
+        //         biome.GenerateTile(chunks, xChunk, yChunk, x, y);
+        //     } else {
+        //         GenerateTile(chunks, xChunk, yChunk, x, y);
+        //     }
+        // }
+
         private void BlurChunk(Chunk[,] chunks, int xChunk, int yChunk, int x, int y){
-            List<Chunk> others = new List<Chunk>();
             Chunk chunk = chunks[xChunk, yChunk];
-            if(chunks[xChunk + 1, yChunk].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk + 1, yChunk]);
-            if(chunks[xChunk - 1, yChunk + 1].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk - 1, yChunk + 1]);
-            if(chunks[xChunk, yChunk + 1].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk, yChunk + 1]);
-            if(chunks[xChunk + 1, yChunk + 1].biome.Type != chunk.biome.Type) others.Add(chunks[xChunk + 1, yChunk + 1]);
             double highest = chunk.averageHeight;
             double lowest = chunk.averageHeight;
             Biome biome = null;
-            foreach(Chunk other in others){
-                if(other.averageHeight > chunk.averageHeight && other.averageHeight > highest){
-                    if(chunk.heightMap[x,y] > (other.averageHeight + chunk.averageHeight) / 2) {
-                        highest = other.averageHeight;
-                        biome = other.biome;
-                    }
-                } else if(other.averageHeight < chunk.averageHeight && other.averageHeight < lowest){
-                    if(chunk.heightMap[x,y] < (other.averageHeight + chunk.averageHeight) / 2) {
-                        lowest = other.averageHeight;
-                        biome = other.biome;
+            for(int xd = -1; xd < 2; ++xd){
+                for(int yd = -1; yd < 2; ++yd){
+                    Chunk other = chunks[xChunk + xd, yChunk + yd];
+                    if(other.biome.Type == chunk.biome.Type) continue;
+                    if(other.averageHeight > chunk.averageHeight && other.averageHeight > highest){
+                        if(chunk.heightMap[x,y] > (other.averageHeight + chunk.averageHeight) / 2) {
+                            highest = other.averageHeight;
+                            biome = other.biome;
+                        }
+                    } else if(other.averageHeight < chunk.averageHeight && other.averageHeight < lowest){
+                        if(chunk.heightMap[x,y] < (other.averageHeight + chunk.averageHeight) / 2) {
+                            lowest = other.averageHeight;
+                            biome = other.biome;
+                        }
                     }
                 }
             }

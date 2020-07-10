@@ -20,14 +20,13 @@ namespace Tiles {
         EntityEvent ReleaseAttack;
         EntityEvent ReleaseInteract;
 
+        public bool CancelItemUse = false;
+        public bool objectCreated = false;
+
+        public Vector3 position;
+
         public Tile(TileData tileData){
-            OnObjectCreated = new UnityEvent();
-            OnObjectDestroyed = new UnityEvent();
-            OnDataChange = new UnityEvent();
-            OnAttack = new EntityEvent();
-            OnInteract = new EntityEvent();
-            ReleaseAttack = new EntityEvent();
-            ReleaseInteract = new EntityEvent();
+            InitializeListeners();
             this.tileData = tileData;
             hasCollider = false;
             InitializeModifiers();
@@ -42,32 +41,49 @@ namespace Tiles {
         }
 
         public void SetTileData(TileData tileData){
+            if(tileData == null) {
+                return;
+            }
             this.tileData = tileData;
-            if(gameObject != null) {
-                Vector2 pos = gameObject.transform.position;
-                if(gameObject == null) return;
+            if(objectCreated) {
                 foreach(TileModifier modifier in modifiers){
                     modifier.Destroy();
                 }
                 modifiers = null;
-                OnObjectCreated.RemoveAllListeners();
-                OnDataChange.RemoveAllListeners();
-                OnAttack.RemoveAllListeners();
-                OnInteract.RemoveAllListeners();
                 DestroyTile();
+                InitializeListeners();
                 InitializeModifiers();
-                CreateTileObject(pos);
+                CreateTileObject(position);
             } else {
+                foreach(TileModifier modifier in modifiers){
+                    modifier.Destroy();
+                }
+                modifiers = null;
+                InitializeListeners();
                 InitializeModifiers();
             }
             OnDataChange.Invoke();
         }
 
         public void CreateTileObject(Vector2 pos){
-            gameObject = GameObject.Instantiate(new GameObject(), new Vector3(pos.x, pos.y, pos.y), Quaternion.identity);
+            objectCreated = true;
+            position = new Vector3(pos.x, pos.y, pos.y);
+            if(tileData == TileData.AIR) return;
+            gameObject = new GameObject();
+            gameObject.transform.localPosition = position;
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             tileScript = gameObject.AddComponent<TileScript>();
             OnObjectCreated.Invoke();
+        }
+
+        public void CreateOutline(){
+            if(tileScript == null) return;
+            tileScript.CreateOutline(spriteRenderer);
+        }
+
+        public void DeleteOutline(){
+            if(tileScript == null) return;
+            tileScript.DeleteOutline();
         }
 
         public void AddCreateListener(UnityAction listener){
@@ -114,7 +130,18 @@ namespace Tiles {
             ReleaseInteract.Invoke(entity);
         }
 
+        public void InitializeListeners(){
+            OnObjectCreated = new UnityEvent();
+            OnObjectDestroyed = new UnityEvent();
+            OnDataChange = new UnityEvent();
+            OnAttack = new EntityEvent();
+            OnInteract = new EntityEvent();
+            ReleaseAttack = new EntityEvent();
+            ReleaseInteract = new EntityEvent();
+        }
+
         public void DestroyTile(){
+            objectCreated = false;
             Object.Destroy(gameObject);
         }
     }

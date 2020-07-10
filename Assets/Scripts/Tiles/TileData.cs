@@ -17,13 +17,15 @@ namespace Tiles {
         public static readonly TileData TREE = new TileData("tree", 5, new TileModifier[]{
             new TileRenderer(3), 
             new TileOrderer(), 
-            new ResourceBreakable(new Items.LootTable(new ItemStack[]{new ItemStack(ItemData.WOOD, 1), new ItemStack(ItemData.WOOD, 2), new ItemStack(ItemData.WOOD, 3)}), 1.5f, ItemData.PICKAXE)
+            new ResourceBreakable(new Items.LootTable(new ItemStack[]{new ItemStack(ItemData.WOOD, 1), new ItemStack(ItemData.WOOD, 2), new ItemStack(ItemData.WOOD, 3)}), 
+                                    1.5f, ItemData.PICKAXE, new Utils.Range(1, 3), ItemData.WOOD)
         }, false);
         public static readonly TileData DIRT_ROCK = new TileData("dirtRock", 6, new TileModifier[]{new TileRenderer(7), new TileOrderer()});
         public static readonly TileData STONE_ROCK = new TileData("stoneRock", 7, new TileModifier[]{new TileRenderer(7), new TileOrderer()});
         public static readonly TileData LILYPAD = new TileData("lilypad", 8, new TileModifier[]{new TileRenderer(4), new TileOrderer()});
         public static readonly TileData SAND = new TileData("sand", 9, new TileModifier[]{new AutoTile(6)});
         public static readonly TileData DEADGRASS = new TileData("deadgrass", 10, new TileModifier[]{new TileRenderer(3)});
+        public static readonly TileData WORKBENCH = new TileData("workbench", 11, new TileModifier[]{new TileRenderer(1), new TileOrderer()}, false);
 
         public TileData(string name, int id, TileModifier[] tileModifiers, bool isWalkable = true) : base(name, id, tileModifiers, isWalkable) {
             idToData.Add(id, this);

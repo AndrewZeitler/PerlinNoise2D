@@ -108,7 +108,6 @@ public class ProceduralGenerator : MonoBehaviour
                         world[xc, yc].tiles[xt, yt].hasCollider = true;
                     }
                 } else {
-                    Debug.Log(new Vector2(x + xd, y + yd));
                     if(world[xc, yc].tiles[xt, yt].hasCollider){
                         Destroy(world[xc, yc].tiles[xt, yt].gameObject.GetComponent<BoxCollider2D>());
                         world[xc, yc].tiles[xt, yt].hasCollider = false;

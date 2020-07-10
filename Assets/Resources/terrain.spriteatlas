@@ -17,7 +17,7 @@ SpriteAtlas:
       textureCompression: 0
       filterMode: 0
       generateMipMaps: 0
-      readable: 0
+      readable: 1
       crunchedCompression: 0
       sRGB: 1
     platformSettings:
@@ -45,10 +45,12 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 333a9cbc8fba36a45b89dd6c32f92332, type: 3}
     - {fileID: 2800000, guid: fe7099ee7c8d5aa4ba76a5ae2ddcf422, type: 3}
     - {fileID: 2800000, guid: b9a4628608b7bd44d9f97148f3d5138b, type: 3}
-    totalSpriteSurfaceArea: 339115
+    - {fileID: 2800000, guid: 340e8864e05061f43b1c49ef1300869c, type: 3}
+    totalSpriteSurfaceArea: 339387
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 3105379272556981734, guid: 340e8864e05061f43b1c49ef1300869c, type: 3}
   - {fileID: 7423209905896437831, guid: b9a4628608b7bd44d9f97148f3d5138b, type: 3}
   - {fileID: 8769440877673374286, guid: b9a4628608b7bd44d9f97148f3d5138b, type: 3}
   - {fileID: -7062754206811519283, guid: b9a4628608b7bd44d9f97148f3d5138b, type: 3}
@@ -1359,6 +1361,7 @@ SpriteAtlas:
   - {fileID: 7823596021576171418, guid: fe7099ee7c8d5aa4ba76a5ae2ddcf422, type: 3}
   - {fileID: 5397161527163026260, guid: fe7099ee7c8d5aa4ba76a5ae2ddcf422, type: 3}
   m_PackedSpriteNamesToIndex:
+  - workbench0
   - outside_347
   - outside_204
   - outside_368

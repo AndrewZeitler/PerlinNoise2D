@@ -93,7 +93,6 @@ public class SpriteManager : MonoBehaviour
 
     public static Sprite GetTileSprite(string name){
         if(!nameToTile.ContainsKey(name)) {
-            //Debug.Log(name);
             return null;
         }
         return nameToTile[name];

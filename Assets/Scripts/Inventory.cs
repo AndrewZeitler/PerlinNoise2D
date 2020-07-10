@@ -28,11 +28,23 @@ public class Inventory {
         return cols;
     }
 
+    public ItemSlot GetItemSlot(int index){
+        return itemSlots[index];
+    }
+
     public ItemStack GetItemStackAt(int index){
         return itemSlots[index].GetItemStack();
     }
 
     public bool AddItem(ItemStack item){
+        foreach(ItemSlot slot in itemSlots){
+            if(!slot.IsEmpty() && slot.GetItemStack().GetItem().itemData == item.GetItem().itemData) {
+                if(slot.GetItemStack().Add(item)){
+                    inventoryChanged.Invoke();
+                    return true;
+                }
+            }
+        }
         foreach(ItemSlot slot in itemSlots){
             if(slot.IsEmpty()) {
                 slot.SetItemStack(item);
@@ -46,6 +58,12 @@ public class Inventory {
     public ItemStack AddItemAt(int index, ItemStack item){
         if(index < 0 || index > itemSlots.Length) throw new System.IndexOutOfRangeException();
         ItemStack prevItemStack = itemSlots[index].GetItemStack();
+        if(prevItemStack != null && item != null && prevItemStack.GetItem().itemData == item.GetItem().itemData){
+            if(prevItemStack.Add(item)){
+                inventoryChanged.Invoke();
+                return null;
+            }
+        }
         itemSlots[index].SetItemStack(item);
         inventoryChanged.Invoke();
         return prevItemStack;
@@ -56,6 +74,14 @@ public class Inventory {
         itemSlots[index].SetItemStack(null);
         inventoryChanged.Invoke();
         return prevItemStack;
+    }
+
+    public bool RemoveItemAt(int index, int amount){
+        ItemStack itemStack = itemSlots[index].GetItemStack();
+        if(itemStack.GetAmount() - amount <= 0) return false;
+        itemSlots[index].SetItemStack(new ItemStack(itemStack.GetItem(), itemStack.GetAmount() - amount));
+        inventoryChanged.Invoke();
+        return true;
     }
 
     public int GetAmountOfType(Item item){

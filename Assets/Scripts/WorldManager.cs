@@ -6,34 +6,7 @@ using Entities;
 
 namespace World {
     public static class WorldManager {
-        public static Player player { get; private set; }
         static Dictionary<Vector2, Chunk> loadedChunks = new Dictionary<Vector2, Chunk>();
-
-        public static void CreatePlayer(){
-            // Vector2 pos = new Vector2();
-            // bool foundPos = false;
-            // while(!foundPos){
-            //     int rand = Random.Range(0, loadedChunks.Count);
-            //     foreach(var chunk in loadedChunks){
-            //         if(rand == 0){
-            //             int x = Random.Range(0, Chunk.chunkSize);
-            //             int y = Random.Range(0, Chunk.chunkSize);
-            //             if(chunk.Value.terrain[x,y].tileData.IsWalkable && chunk.Value.tiles[x,y].tileData.IsWalkable){
-            //                 Debug.Log(new Vector2(chunk.Value.x, chunk.Value.y));
-            //                 pos = new Vector2(chunk.Value.x * Chunk.chunkSize + x, chunk.Value.y * Chunk.chunkSize + y);
-            //                 foundPos = true;
-            //             }
-            //             break;
-            //         } else {
-            //             --rand;
-            //         }
-            //     }
-            // }
-            // Debug.Log(pos);
-            player = new Player("Player", new Vector2(0, 0));
-            MenuManager.AddComponentDisplay(player.inventory);
-            MenuManager.CreateHotbar(player.hotbar);
-        }
 
         public static void AddChunk(Vector2 pos, Chunk chunk){
             loadedChunks.Add(pos, chunk);
@@ -42,6 +15,33 @@ namespace World {
         public static Chunk GetChunk(Vector2 pos){
             if(!loadedChunks.ContainsKey(pos)) return null;
             return loadedChunks[pos];
+        }
+
+        public static Vector2 MouseToWorld(Vector3 mouse){
+            mouse.z = Camera.main.transform.position.z;
+            mouse = Camera.main.ScreenToWorldPoint(mouse);
+            return new Vector2(mouse.x + 0.5f, mouse.y + 0.5f);
+        }
+
+        public static Tile MouseToTile(Vector3 mouse, Player player){
+            mouse.z = Camera.main.transform.position.z;
+            mouse = Camera.main.ScreenToWorldPoint(mouse);
+            Vector2Int worldMouse = new Vector2Int(Mathf.FloorToInt(mouse.x + 0.5f), Mathf.FloorToInt(mouse.y + 0.5f));
+            if((worldMouse - (Vector2)player.entityObject.transform.position).magnitude > Player.RANGE) return null;
+            return GetTopTile(worldMouse);
+        }
+
+        public static Tile GetTopTile(Vector2 pos){
+            int xc = Mathf.FloorToInt(pos.x / Chunk.chunkSize);
+            int yc = Mathf.FloorToInt(pos.y / Chunk.chunkSize);
+            int x = Mathf.FloorToInt(pos.x % Chunk.chunkSize);
+            int y = Mathf.FloorToInt(pos.y % Chunk.chunkSize);
+            if(x < 0) x += Chunk.chunkSize;
+            if(y < 0) y += Chunk.chunkSize;
+            if(loadedChunks[new Vector2(xc, yc)].tiles[x, y].tileData == TileData.AIR){
+                return loadedChunks[new Vector2(xc, yc)].terrain[x, y];
+            }
+            return loadedChunks[new Vector2(xc, yc)].tiles[x, y];
         }
 
         public static Tile GetTile(Vector2 pos){
