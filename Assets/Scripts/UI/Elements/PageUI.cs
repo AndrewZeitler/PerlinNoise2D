@@ -57,69 +57,6 @@ namespace UI {
             scrollTransform.offsetMin = scrollTransform.offsetMax = Vector3.zero;
         }
 
-        // public void AddInventory(Vector2 position, Inventory inventory, Utils.RangeInt bounds = null){
-        //     if(bounds == null) bounds = new Utils.RangeInt(0, inventory.GetInventorySize());
-        //     if(slotPrefab == null) {
-        //         slotPrefab = Resources.Load("Prefabs/ItemSlot") as GameObject;
-        //     }
-        //     inventories.Add(inventory);
-
-        //     float aspectRatio = Screen.width / (float)Screen.height;
-        //     float slotHeight = (1f / inventory.GetColumns() * 0.3f * aspectRatio);
-        //     RectTransform uiTransform = content.GetComponent<RectTransform>();
-        //     uiTransform.anchorMax = new Vector2(1, slotHeight * ((bounds.max - bounds.min) / inventory.GetColumns()));
-
-        //     for(int i = bounds.min; i < bounds.max; ++i){
-        //         GameObject slot = GameObject.Instantiate(slotPrefab);
-        //         slot.transform.SetParent(content.transform);
-        //         ItemSlot itemSlot = slot.AddComponent<ItemSlot>();
-        //         itemSlot.index = i;
-        //         itemSlot.inventory = inventory;
-        //         RectTransform slotTransform = slot.GetComponent<RectTransform>();
-        //         slotTransform.offsetMin = slotTransform.offsetMax = Vector3.zero;
-        //         slotTransform.anchorMin = new Vector2(1f / inventory.GetColumns() * ((i - bounds.min) % inventory.GetColumns()), 
-        //                                                 1f - slotHeight * ((i - bounds.min) / inventory.GetColumns() + 1) / uiTransform.anchorMax.y);
-        //         slotTransform.anchorMax = new Vector2(1f / inventory.GetColumns() * ((i - bounds.min) % inventory.GetColumns() + 1), 
-        //                                                 1f - slotHeight * ((i - bounds.min) / inventory.GetColumns()) / uiTransform.anchorMax.y);
-        //     }
-        //     SetOnClick(inventory, ItemSlotClick);
-        //     SetOnEnter(inventory, ItemSlotEnter);
-        //     SetOnExit(inventory, ItemSlotExit);
-        //     InventoryChanged();
-        //     inventory.AddListener(InventoryChanged);
-        // }
-
-        // public void SetOnClick(Inventory inventory, UnityAction<PointerEventData, ItemSlot> OnClick){
-        //     Debug.Log(content.transform.childCount);
-        //     for(int i = 0; i < content.transform.childCount; ++i){
-        //         ItemSlot itemSlot = content.transform.GetChild(i).GetComponent<ItemSlot>();
-        //         if(itemSlot == null) continue;
-        //         if(itemSlot.inventory == inventory) {
-        //             itemSlot.OnClick = OnClick;
-        //         }
-        //     }
-        // }
-
-        // public void SetOnEnter(Inventory inventory, UnityAction<PointerEventData, ItemSlot> OnEnter){
-        //     for(int i = 0; i < content.transform.childCount; ++i){
-        //         ItemSlot itemSlot = content.transform.GetChild(i).GetComponent<ItemSlot>();
-        //         if(itemSlot == null) continue;
-        //         if(itemSlot.inventory == inventory) {
-        //             itemSlot.OnEnter = OnEnter;
-        //         }
-        //     }
-        // }
-
-        // public void SetOnExit(Inventory inventory, UnityAction<PointerEventData, ItemSlot> OnExit){
-        //     for(int i = 0; i < content.transform.childCount; ++i){
-        //         ItemSlot itemSlot = content.transform.GetChild(i).GetComponent<ItemSlot>();
-        //         if(itemSlot == null) continue;
-        //         if(itemSlot.inventory == inventory) {
-        //             itemSlot.OnExit = OnExit;
-        //         }
-        //     }
-        // }
-
         public void PageChanged(){
             for(int i = 0; i < content.transform.childCount; ++i){
                 ItemSlot slot = content.transform.GetChild(i).GetComponent<ItemSlot>();

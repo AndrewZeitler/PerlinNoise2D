@@ -23,22 +23,27 @@ namespace UI.Elements {
         }
 
         public override void ItemSlotClick(PointerEventData pointer, ItemSlot clickedSlot){
-            GameObject heldItem = MenuManager.heldItem;
             ItemStack item = null;
-            if(heldItem != null){
-                item = heldItem.GetComponent<HeldItem>().itemStack;
+            if(MenuManager.itemHeld != null){
+                item = MenuManager.itemHeld.itemStack;
             }
             int slotIndex = clickedSlot.index;
-            MenuManager.ItemSlotClick(pointer, clickedSlot, clickedSlot.inventory.AddItemAt(slotIndex, item));
+
+            ItemStack newItem = clickedSlot.inventory.AddItemAt(slotIndex, item);
+            MenuManager.SetHeldItem(newItem);
+            MenuManager.SetDescriptor(new ItemDescriptorUI(item));
             SlotChanged();
         }
 
         public override void ItemSlotEnter(PointerEventData pointer, ItemSlot itemSlot){
-            MenuManager.ItemSlotEnter(pointer, itemSlot);
+            MenuManager.SetDescriptor(new ItemDescriptorUI(itemSlot.itemStack));
         }
 
         public override void ItemSlotExit(PointerEventData pointer, ItemSlot itemSlot){
-            MenuManager.ItemSlotExit(pointer, itemSlot);
+            if(MenuManager.descriptor != null) {
+                MenuManager.descriptor.DestroyUI();
+                MenuManager.descriptor = null;
+            }
         }
 
     }

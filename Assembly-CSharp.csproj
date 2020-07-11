@@ -83,7 +83,10 @@
      <Compile Include="Assets\Scripts\Tiles\TileRenderer.cs" />
      <Compile Include="Assets\Scripts\Tiles\TileScript.cs" />
      <Compile Include="Assets\Scripts\UI\CursorManager.cs" />
+     <Compile Include="Assets\Scripts\UI\Elements\DescriptorUI.cs" />
+     <Compile Include="Assets\Scripts\UI\Elements\HeldItemUI.cs" />
      <Compile Include="Assets\Scripts\UI\Elements\HotbarSlotUI.cs" />
+     <Compile Include="Assets\Scripts\UI\Elements\ItemDescriptionUI.cs" />
      <Compile Include="Assets\Scripts\UI\Elements\OpenSlotUI.cs" />
      <Compile Include="Assets\Scripts\UI\Elements\PageUI.cs" />
      <Compile Include="Assets\Scripts\UI\Elements\SlotUI.cs" />

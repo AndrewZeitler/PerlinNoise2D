@@ -70,14 +70,6 @@ namespace UI {
             }
         }
 
-        public void ClickSlot(PointerEventData pointer, ItemSlot clickedSlot){
-            ItemStack item = null;
-            if(MenuManager.heldItem != null){
-                item = MenuManager.heldItem.GetComponent<HeldItem>().itemStack;
-            }
-            MenuManager.ItemSlotClick(pointer, clickedSlot, inventory.AddItemAt(clickedSlot.index, item));
-        }
-
         public void InventoryOpened(){
             RectTransform uiTransform = hotbar.GetComponent<RectTransform>();
             if(MenuManager.IsMenuActive()){

@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using Entities;
+using UI.Elements;
 
 namespace UI {
 
@@ -22,8 +22,8 @@ namespace UI {
         private static GameObject emptyPrefab;
 
         private static int currentTab = 0;
-        public static GameObject heldItem { get; private set; } = null;
-        private static GameObject itemDescription = null;
+        public static HeldItemUI itemHeld = null;
+        public static DescriptorUI descriptor = null;
         private static UnityEvent inventoryOpen;
         private static HotbarUI hotbar;
 
@@ -50,7 +50,10 @@ namespace UI {
                 pages[currentTab].page.transform.SetAsLastSibling();
                 pages[currentTab].page.transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
             } else {
-                Destroy(itemDescription);
+                if(descriptor != null) {
+                    descriptor.DestroyUI();
+                    descriptor = null;
+                }
             }
             inventoryOpen.Invoke();
         }
@@ -99,48 +102,29 @@ namespace UI {
             click.transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
         }
 
-        public static void ItemSlotClick(PointerEventData pointer, ItemSlot itemSlot, ItemStack newItem){
-            if(newItem == null){
-                if(heldItem != null){
-                    CreateItemDescription(heldItem.GetComponent<HeldItem>().itemStack);
-                    Destroy(heldItem);
-                    heldItem = null;
+        public static void SetHeldItem(ItemStack newItem){
+            if(MenuManager.itemHeld == null){
+                if(newItem != null){
+                    if(MenuManager.descriptor != null) MenuManager.descriptor.DestroyUI();
+                    MenuManager.itemHeld = new HeldItemUI(newItem); 
                 }
             } else {
-                if(heldItem == null){
-                    heldItem = Instantiate(slotPrefab);
-                    Destroy(heldItem.GetComponent<Image>());
-                    RectTransform heldTransform = heldItem.GetComponent<RectTransform>();
-                    heldTransform.anchorMin = heldTransform.anchorMax = new Vector2(0, 1);
-                    heldTransform.sizeDelta = new Vector2(Screen.height / 10f, Screen.height / 10f);
-                    heldItem.transform.SetParent(menu.transform.parent);
-                    heldItem.AddComponent<HeldItem>().SetItemStack(newItem);
-                    Destroy(heldItem.GetComponent<ItemSlot>());
+                if(newItem == null){
+                    if(MenuManager.descriptor != null) {
+                        MenuManager.descriptor.CreateUI();
+                    }
+                    MenuManager.itemHeld.Destroy();
+                    MenuManager.itemHeld = null;
                 } else {
-                    heldItem.GetComponent<HeldItem>().SetItemStack(newItem);
+                    MenuManager.itemHeld.Destroy();
+                    MenuManager.itemHeld = new HeldItemUI(newItem);
                 }
-                Destroy(itemDescription);
             }
         }
 
-        public static void CreateItemDescription(ItemStack item){
-            if(item == null) return;
-            itemDescription = Instantiate(descriptionPrefab);
-            itemDescription.GetComponentInChildren<Text>().fontSize = Screen.height / 32;
-            itemDescription.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height / 3.2f, 0);
-            itemDescription.transform.SetParent(menu.transform.parent);
-            string name = item.GetItem().itemData.Name;
-
-            itemDescription.GetComponentInChildren<Text>().text = name;
-        }
-
-        public static void ItemSlotEnter(PointerEventData pointer, ItemSlot itemSlot){
-            if(heldItem != null) return;
-            CreateItemDescription(itemSlot.itemStack);
-        }
-
-        public static void ItemSlotExit(PointerEventData pointer, ItemSlot itemSlot){
-            Destroy(itemDescription);
+        public static void SetDescriptor(DescriptorUI descriptor){
+            MenuManager.descriptor = descriptor;
+            if(itemHeld == null) descriptor.CreateUI();
         }
 
         public static void AddInventoryOpenListener(UnityAction listener) {
