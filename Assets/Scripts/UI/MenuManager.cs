@@ -92,14 +92,18 @@ namespace UI {
         }
 
         public static void OnTabClick(GameObject click){
-            click.transform.SetAsLastSibling();
             int index = 0;
             for(int i = 0; i < pages.Count; ++i) { 
                 if(pages[i].page == click) index = i; 
             }
+            SetTab(index);
+        }
+
+        public static void SetTab(int index){
+            pages[index].page.transform.SetAsLastSibling();
             pages[currentTab].page.transform.GetChild(0).GetComponent<Image>().color = new Color(190 / 255f, 190 / 255f, 215 / 255f);
             currentTab = index;
-            click.transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
+            pages[index].page.transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
         }
 
         public static void SetHeldItem(ItemStack newItem){
@@ -123,8 +127,9 @@ namespace UI {
         }
 
         public static void SetDescriptor(DescriptorUI descriptor){
+            if(MenuManager.descriptor != null) MenuManager.descriptor.DestroyUI();
             MenuManager.descriptor = descriptor;
-            if(itemHeld == null) descriptor.CreateUI();
+            if(itemHeld == null && descriptor != null) descriptor.CreateUI();
         }
 
         public static void AddInventoryOpenListener(UnityAction listener) {

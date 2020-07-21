@@ -82,6 +82,7 @@ namespace UI {
         }
 
         public void OnSlotChange(int slot){
+            if(MenuManager.IsMenuActive()) return;
             selectedSlot = slot;
             InventoryChanged();
         }

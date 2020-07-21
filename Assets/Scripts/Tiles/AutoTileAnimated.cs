@@ -1,6 +1,7 @@
 using UnityEngine;
 using World;
 using System.Collections;
+using Utils;
 
 namespace Tiles {
     public class AutoTileAnimated : TileModifier {

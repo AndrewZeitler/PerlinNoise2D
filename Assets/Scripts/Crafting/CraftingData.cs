@@ -2,9 +2,15 @@ using System.Collections.Generic;
 
 namespace Crafting {
 
-    public class CraftingData {
+    public abstract class CraftingData : CraftingStation {
 
-        public static WorkBench WORKBENCH = new WorkBench();
+        public static Dictionary<string, CraftingData> nameToData = new Dictionary<string, CraftingData>();
+
+        public static CraftingData WORKBENCH = new WorkBench("Workbench");
+
+        public CraftingData(string name){
+            nameToData[name] = this;
+        }
 
     }
 

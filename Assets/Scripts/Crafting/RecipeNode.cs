@@ -4,7 +4,7 @@ using Items;
 namespace Crafting {
 
     public class RecipeNode {
-        public Recipe result;
+        public List<Recipe> result;
         public Dictionary<ItemData, RecipeNode> recipeList;
 
         public RecipeNode() {
@@ -12,7 +12,7 @@ namespace Crafting {
             recipeList = null;
         }
 
-        public RecipeNode(Recipe result) {
+        public RecipeNode(List<Recipe> result) {
             this.result = result;
             recipeList = null;
         }

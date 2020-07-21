@@ -23,10 +23,11 @@ namespace Crafting {
                 }
                 node = node.recipeList[items[i]];
             }
-            node.result = recipe;
+            if(node.result == null) node.result = new List<Recipe>();
+            node.result.Add(recipe);
         }
 
-        public virtual List<Recipe> GetRecipes(ItemStack[] itemStacks){
+        public virtual List<List<Recipe>> GetRecipes(ItemStack[] itemStacks){
             if(itemStacks == null || itemStacks.Length == 0) return null;
             List<ItemData> items = new List<ItemData>();
             for(int i = 0; i < itemStacks.Length; ++i){
@@ -46,8 +47,8 @@ namespace Crafting {
             return DeepCopy(end);
         }
 
-        protected List<Recipe> DeepCopy(RecipeNode node){
-            List<Recipe> result  = new List<Recipe>();
+        protected List<List<Recipe>> DeepCopy(RecipeNode node){
+            List<List<Recipe>> result  = new List<List<Recipe>>();
             if(node.recipeList == null) {
                 result.Add(node.result);
             } else {
@@ -59,6 +60,25 @@ namespace Crafting {
             return result;
         }
 
+        public bool CanMakeRecipe(Recipe recipe, List<ItemStack> items){
+            if(recipe.ingredients.Length != items.Count) return false;
+
+            List<ItemStack> ingredients = new List<ItemStack>();
+            for(int i = 0; i < recipe.ingredients.Length; ++i){
+                ingredients.Add(recipe.ingredients[i]);
+            }
+            if(!isOrdered) {
+                items.Sort(ItemStack.Compare);
+                ingredients.Sort(ItemStack.Compare);
+            }
+
+            for(int i = 0; i < items.Count; ++i){
+                if(items[i].GetItem().itemData != ingredients[i].GetItem().itemData) return false;
+                if(items[i].GetAmount() < ingredients[i].GetAmount()) return false;
+            }
+            
+            return true;
+        }
     }
 
 }

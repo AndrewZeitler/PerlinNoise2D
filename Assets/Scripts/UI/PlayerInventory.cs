@@ -1,18 +1,36 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UI.Elements;
 using Entities;
+using System.Collections;
 
 namespace UI {
     public class PlayerInventoryUI
     {
+        static GameObject inventoryPrefab = null;
         Inventory inventory;
+
         public void CreateUI(Player player, PageUI page){
             this.inventory = player.inventory;
-            for(int i = 0; i < Player.INVENTORY_SIZE; ++i){
-                OpenSlotUI slot = new OpenSlotUI(new Vector2(i % 4f * OpenSlotUI.SLOT_SIZE.x, 1f - i / 4 * OpenSlotUI.SLOT_SIZE.y), i + Player.HOTBAR_SIZE, player.inventory);
-                slot.SetParent(page.content.transform);
-            }
-            //page.AddInventory(Vector2.zero, inventory, new Utils.RangeInt(Player.HOTBAR_SIZE, inventory.GetInventorySize()));
+
+            if(inventoryPrefab == null) inventoryPrefab = Resources.Load("Prefabs/Inventory") as GameObject;
+            SceneManager.sceneManager.StartCoroutine(CreateInventory(page));
         }
+
+        public IEnumerator CreateInventory(PageUI page){
+            yield return new WaitForEndOfFrame();
+            GameObject inventoryUI = GameObject.Instantiate(inventoryPrefab);
+            float width = page.viewport.GetComponent<RectTransform>().rect.width;
+            inventoryUI.GetComponent<GridLayoutGroup>().cellSize = new Vector2(0.25f * width, 0.25f * width);
+            page.SetContent(inventoryUI);
+            RectTransform transform = inventoryUI.GetComponent<RectTransform>();
+            transform.offsetMax = transform.offsetMin = Vector2.zero;
+
+            for(int i = 0; i < inventory.GetInventorySize(); ++i){
+                /////////////////////*******************************//////////////////////////
+                OpenSlotUI slot = new OpenSlotUI(i, inventory);
+                slot.SetParent(inventoryUI.transform);
+            }
+        }   
     }
 }

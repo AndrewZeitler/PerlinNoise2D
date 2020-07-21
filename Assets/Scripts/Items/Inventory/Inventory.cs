@@ -84,6 +84,21 @@ public class Inventory {
         return true;
     }
 
+    public bool RemoveItem(ItemStack item){
+        for(int i = 0; i < GetInventorySize(); ++i){
+            if(itemSlots[i].GetItemStack() == null) continue;
+            if(itemSlots[i].GetItemStack().GetItem().itemData == item.GetItem().itemData){
+                if(itemSlots[i].GetItemStack().GetAmount() >= item.GetAmount()){
+                    if(itemSlots[i].GetItemStack().GetAmount() == item.GetAmount()) itemSlots[i].SetItemStack(null);
+                    else itemSlots[i].SetItemStack(new ItemStack(item.GetItem().itemData, itemSlots[i].GetItemStack().GetAmount() - item.GetAmount()));
+                    inventoryChanged.Invoke();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public int GetAmountOfType(Item item){
         int count = 0;
         foreach(ItemSlot slot in itemSlots){
@@ -103,4 +118,5 @@ public class Inventory {
     public void RemoveListener(UnityAction call){
         inventoryChanged.RemoveListener(call);
     }
+    
 }

@@ -283,7 +283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1287072470
 RectTransform:
   m_ObjectHideFlags: 0
@@ -529,12 +529,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedMenu: {fileID: 1287072469}
-  serializedPagePrefab: {fileID: 5565625735961064815, guid: 1e0ab4a047007604cbd970e8069cac3e,
-    type: 3}
-  serializedSlotPrefab: {fileID: 8767865098867343578, guid: 10548effaa9a991418d221ef281634cc,
-    type: 3}
-  serializedDescriptionPrefab: {fileID: 3223233292346194199, guid: c2ce3701120048c48acb5818925b4698,
-    type: 3}
 --- !u!1 &1899024754
 GameObject:
   m_ObjectHideFlags: 0

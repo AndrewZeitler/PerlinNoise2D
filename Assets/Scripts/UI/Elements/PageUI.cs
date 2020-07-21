@@ -12,7 +12,9 @@ namespace UI {
         public static GameObject pagePrefab;
         public static GameObject slotPrefab;
         public GameObject page { get; private set; }
+        public GameObject viewport { get; private set; }
         public GameObject content { get; private set; }
+        GameObject scroll = null;
 
         public List<Inventory> inventories = new List<Inventory>();
 
@@ -37,24 +39,29 @@ namespace UI {
 
             GameObject panel = page.transform.GetChild(1).gameObject;
 
-            GameObject scroll = new GameObject("Scroll");
-            RectTransform scrollRect = scroll.AddComponent<RectTransform>();
-            scrollRect.anchorMin = Vector2.zero;
-            scrollRect.anchorMax = Vector2.one;
-            scroll.AddComponent<ScrollRect>();
-            scroll.transform.SetParent(panel.transform);
+            scroll = panel.transform.GetChild(0).gameObject;
+            // RectTransform scrollRect = scroll.AddComponent<RectTransform>();
+            // scrollRect.anchorMin = Vector2.zero;
+            // scrollRect.anchorMax = Vector2.one;
+            // scroll.AddComponent<ScrollRect>();
+            // ContentSizeFitter scrollSizeFitter = scroll.AddComponent<ContentSizeFitter>();
+            // scrollSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            // scrollSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            // scroll.transform.SetParent(panel.transform);
 
-            content = new GameObject("Content");
-            content.AddComponent<RectTransform>();
-            RectTransform contentTransform = content.GetComponent<RectTransform>();
-            contentTransform.anchorMin = Vector2.zero;
-            contentTransform.anchorMax = Vector2.one;
-            content.transform.SetParent(scroll.transform);
+            viewport = scroll.transform.GetChild(0).gameObject;
+            // RectTransform contentTransform = content.AddComponent<RectTransform>();
+            // contentTransform.anchorMin = new Vector2(0.025f, 0.5f);
+            // contentTransform.anchorMax = new Vector2(0.975f, 0.5f);
+            // ContentSizeFitter contentSizeFitter = content.AddComponent<ContentSizeFitter>();
+            // contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            // contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            // content.transform.SetParent(scroll.transform);
 
-            scroll.GetComponent<ScrollRect>().content = contentTransform;
-            scroll.GetComponent<ScrollRect>().scrollSensitivity = 50;
-            RectTransform scrollTransform = scroll.GetComponent<RectTransform>();
-            scrollTransform.offsetMin = scrollTransform.offsetMax = Vector3.zero;
+            // scroll.GetComponent<ScrollRect>().content = contentTransform;
+            // scroll.GetComponent<ScrollRect>().scrollSensitivity = 50;
+            // RectTransform scrollTransform = scroll.GetComponent<RectTransform>();
+            // scrollTransform.offsetMin = scrollTransform.offsetMax = Vector3.zero;
         }
 
         public void PageChanged(){
@@ -83,6 +90,12 @@ namespace UI {
 
         public void OnTabClick(GameObject click){
             MenuManager.OnTabClick(click);
+        }
+
+        public void SetContent(GameObject content){
+            content.transform.SetParent(viewport.transform);
+            scroll.GetComponent<ScrollRect>().content = content.GetComponent<RectTransform>();
+            this.content = content;
         }
     }
 

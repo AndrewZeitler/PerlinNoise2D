@@ -91,32 +91,6 @@ public class ProceduralGenerator : MonoBehaviour
         }
     }
 
-    void UpdateColliders(float x, float y){
-        for(int xd = -collisionRadius - 1; xd < collisionRadius + 2; ++xd){
-            for(int yd = -collisionRadius - 1; yd < collisionRadius + 2; ++yd){
-                int xc = Mathf.FloorToInt((x + xd) / Chunk.chunkSize) - world[0,0].x;
-                int yc = Mathf.FloorToInt((y + yd) / Chunk.chunkSize) - world[0,0].y;
-                int xt = Mathf.FloorToInt((x + xd) % Chunk.chunkSize);
-                int yt = Mathf.FloorToInt((y + yd) % Chunk.chunkSize);
-                if(xt < 0) xt = Chunk.chunkSize + xt;
-                if(yt < 0) yt = Chunk.chunkSize + yt;
-                // Debug.Log(new Vector2((xc + world[0,0].x) * Chunk.chunkSize + xt, (yc + world[0,0].y) * Chunk.chunkSize + yt));
-                if(Vector2.Distance(new Vector2(x, y), new Vector2(x + xd, y + yd)) <= collisionRadius){
-                    if(!world[xc, yc].tiles[xt, yt].tileData.IsWalkable && !world[xc, yc].tiles[xt, yt].hasCollider){
-                        BoxCollider2D boxCollider = world[xc, yc].tiles[xt, yt].gameObject.AddComponent<BoxCollider2D>();
-                        //boxCollider.size = new Vector2(1, 1);
-                        world[xc, yc].tiles[xt, yt].hasCollider = true;
-                    }
-                } else {
-                    if(world[xc, yc].tiles[xt, yt].hasCollider){
-                        Destroy(world[xc, yc].tiles[xt, yt].gameObject.GetComponent<BoxCollider2D>());
-                        world[xc, yc].tiles[xt, yt].hasCollider = false;
-                    }
-                }
-            }
-        }
-    }
-
     void FixedUpdate()
     {
         if(!worldIsGenerated || !playerCreated) return;

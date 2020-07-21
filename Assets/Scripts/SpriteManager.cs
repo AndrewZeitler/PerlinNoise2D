@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 using Tiles;
-using Items;
+using Utils;
 
 public class SpriteManager : MonoBehaviour
 {
@@ -35,32 +35,6 @@ public class SpriteManager : MonoBehaviour
         foreach(Sprite sprite in sprites){
             nameToItem[sprite.name.Replace("(Clone)", "")] = sprite;
         }
-    }
-
-    public static Sprite[] GetSprites(TileInfo tile){
-        Sprite[] sprites;
-        if(tile.isAnimation){
-            sprites = new Sprite[tile.animationFrames];
-            for(int i = 0; i < tile.animationFrames; ++i){
-                sprites[i] = tileSprites.GetSprite(tile.tileName + i);
-            }
-        } else {
-            sprites = new Sprite[tile.amount];
-            if(tile.hasAutoTiles) {
-                if(tile.tileName.Contains("Center")){
-                    for(int i = 0; i < tile.amount; ++i){
-                        sprites[i] = tileSprites.GetSprite(tile.tileName + i);
-                    }
-                } else {
-                    sprites[0] = tileSprites.GetSprite(tile.tileName);
-                }
-            } else {
-                for(int i = 0; i < tile.amount; ++i){
-                    sprites[i] = tileSprites.GetSprite(tile.tileName + i);
-                }
-            }
-        }
-        return sprites;
     }
 
     public static Dictionary<string, Sprite> GetSprites(TileData tileData){

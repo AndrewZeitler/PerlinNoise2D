@@ -12,7 +12,6 @@ namespace Entities {
         public static readonly int HOTBAR_SIZE = 8;
         public static readonly float RANGE = 3.5f;
         PlayerController controller;
-        public Hotbar hotbar { get; private set; }
         public int selectedSlot { get; private set; }
         SlotEvent slotEvent;
 
@@ -35,7 +34,6 @@ namespace Entities {
             inventory.AddItem(new ItemStack(ItemData.SHOVEL, 1));
             inventory.AddItem(new ItemStack(ItemData.WOOD, 75));
             inventory.AddItem(new ItemStack(ItemData.WORKBENCH, 10));
-            hotbar = new Hotbar(this);
             entityObject = PlayerController.Instantiate(prefab, pos, Quaternion.identity);
             controller = entityObject.GetComponent<PlayerController>();
 
