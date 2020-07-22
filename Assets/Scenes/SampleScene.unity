@@ -264,7 +264,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1287072469
 GameObject:
@@ -431,7 +431,7 @@ RectTransform:
   m_Children:
   - {fileID: 1287072470}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -483,7 +483,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1680613947
 GameObject:
@@ -514,7 +514,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1680613949
 MonoBehaviour:
@@ -593,319 +593,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1902505190
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1902505191}
-  - component: {fileID: 1902505192}
-  m_Layer: 0
-  m_Name: TileManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1902505191
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902505190}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1902505192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902505190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e537efc48ffbd2045816c78e3e3f7da1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultTileName: grass
-  tilePrefab: {fileID: 4040529437405381250, guid: 8eae0e6811c181b42a481fa81cc36b9a,
-    type: 3}
-  editorTiles:
-  - tileName: grass
-    id: 0
-    amount: 12
-    isWalkable: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 1
-    spawnChance: 0
-    continuationBias: 0
-    priority: 0
-    generateAutoTiles: 0
-    autoTiles:
-    - tileName: grassCenter
-      id: 0
-    - tileName: grassTop
-      id: 0
-    - tileName: grassRight
-      id: 0
-    - tileName: grassBottom
-      id: 0
-    - tileName: grassLeft
-      id: 0
-    - tileName: grassTopLeft
-      id: 0
-    - tileName: grassTopRight
-      id: 0
-    - tileName: grassBottomLeft
-      id: 0
-    - tileName: grassBottomRight
-      id: 0
-    - tileName: grassTopLeftL
-      id: 0
-    - tileName: grassTopRightL
-      id: 0
-    - tileName: grassBottomLeftL
-      id: 0
-    - tileName: grassBottomRightL
-      id: 0
-    - tileName: grassLeftDiagonal
-      id: 0
-    - tileName: grassRightDiagonal
-      id: 0
-    isResource: 0
-    singleResourceChance: 0
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: 
-  - tileName: dirt
-    id: 0
-    amount: 1
-    isWalkable: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 1
-    spawnChance: 0.45
-    continuationBias: 0
-    priority: 1
-    generateAutoTiles: 0
-    autoTiles:
-    - tileName: dirtCenter
-      id: 0
-    - tileName: dirtTop
-      id: 0
-    - tileName: dirtRight
-      id: 0
-    - tileName: dirtBottom
-      id: 0
-    - tileName: dirtLeft
-      id: 0
-    - tileName: dirtTopLeft
-      id: 0
-    - tileName: dirtTopRight
-      id: 0
-    - tileName: dirtBottomLeft
-      id: 0
-    - tileName: dirtBottomRight
-      id: 0
-    - tileName: dirtTopLeftL
-      id: 0
-    - tileName: dirtTopRightL
-      id: 0
-    - tileName: dirtBottomLeftL
-      id: 0
-    - tileName: dirtBottomRightL
-      id: 0
-    - tileName: dirtLeftDiagonal
-      id: 0
-    - tileName: dirtRightDiagonal
-      id: 0
-    isResource: 0
-    singleResourceChance: 0
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: 
-  - tileName: stone
-    id: 0
-    amount: 1
-    isWalkable: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 1
-    spawnChance: 0.2
-    continuationBias: 0.1
-    priority: 2
-    generateAutoTiles: 0
-    autoTiles:
-    - tileName: stoneCenter
-      id: 0
-    - tileName: stoneTop
-      id: 0
-    - tileName: stoneRight
-      id: 0
-    - tileName: stoneBottom
-      id: 0
-    - tileName: stoneLeft
-      id: 0
-    - tileName: stoneTopLeft
-      id: 0
-    - tileName: stoneTopRight
-      id: 0
-    - tileName: stoneBottomLeft
-      id: 0
-    - tileName: stoneBottomRight
-      id: 0
-    - tileName: stoneTopLeftL
-      id: 0
-    - tileName: stoneTopRightL
-      id: 0
-    - tileName: stoneBottomLeftL
-      id: 0
-    - tileName: stoneBottomRightL
-      id: 0
-    - tileName: stoneLeftDiagonal
-      id: 0
-    - tileName: stoneRightDiagonal
-      id: 0
-    isResource: 0
-    singleResourceChance: 0
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: 
-  - tileName: water
-    id: 0
-    amount: 1
-    isWalkable: 0
-    isAnimation: 1
-    animationFrames: 3
-    frameRate: 0.3
-    isTerrain: 1
-    spawnChance: 0.15
-    continuationBias: 0.45
-    priority: 4
-    generateAutoTiles: 0
-    autoTiles:
-    - tileName: waterCenter
-      id: 0
-    - tileName: waterTop
-      id: 0
-    - tileName: waterRight
-      id: 0
-    - tileName: waterBottom
-      id: 0
-    - tileName: waterLeft
-      id: 0
-    - tileName: waterTopLeft
-      id: 0
-    - tileName: waterTopRight
-      id: 0
-    - tileName: waterBottomLeft
-      id: 0
-    - tileName: waterBottomRight
-      id: 0
-    - tileName: waterTopLeftL
-      id: 0
-    - tileName: waterTopRightL
-      id: 0
-    - tileName: waterBottomLeftL
-      id: 0
-    - tileName: waterBottomRightL
-      id: 0
-    - tileName: waterLeftDiagonal
-      id: 0
-    - tileName: waterRightDiagonal
-      id: 0
-    isResource: 0
-    singleResourceChance: 0
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: 
-  - tileName: tree
-    id: 0
-    amount: 3
-    isWalkable: 0
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 0
-    spawnChance: 0
-    continuationBias: 0
-    priority: 0
-    generateAutoTiles: 0
-    autoTiles: []
-    isResource: 1
-    singleResourceChance: 0.025
-    veinChance: 0.27
-    veinContinuationBias: 0
-    resourceSpawnTile: grass
-  - tileName: dirtRock
-    id: 0
-    amount: 7
-    isWalkable: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 0
-    spawnChance: 0
-    continuationBias: 0
-    priority: 0
-    generateAutoTiles: 0
-    autoTiles: []
-    isResource: 1
-    singleResourceChance: 0.025
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: dirt
-  - tileName: stoneRock
-    id: 0
-    amount: 7
-    isWalkable: 1
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 0
-    spawnChance: 0
-    continuationBias: 0
-    priority: 0
-    generateAutoTiles: 0
-    autoTiles: []
-    isResource: 1
-    singleResourceChance: 0.025
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: stone
-  - tileName: lilypad
-    id: 0
-    amount: 4
-    isWalkable: 0
-    isAnimation: 0
-    animationFrames: 0
-    frameRate: 0
-    isTerrain: 0
-    spawnChance: 0
-    continuationBias: 0
-    priority: 0
-    generateAutoTiles: 0
-    autoTiles: []
-    isResource: 1
-    singleResourceChance: 0.01
-    veinChance: 0
-    veinContinuationBias: 0
-    resourceSpawnTile: water
 --- !u!1 &2063237992
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,10 +621,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2063237992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e14a5ea83e8004c8c5c07ce723dfb5, type: 3}
+  m_Script: {fileID: 11500000, guid: c2f885c8364148040b4e168795f0c7c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texture: {fileID: 2800000, guid: 9daf77dfdc382384eb27be5b7f78350e, type: 3}
+  texture: {fileID: 0}
 --- !u!4 &2063237994
 Transform:
   m_ObjectHideFlags: 0
@@ -948,7 +637,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2104531808
 GameObject:
