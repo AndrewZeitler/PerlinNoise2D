@@ -60,6 +60,7 @@ namespace UI {
         }
 
         public void OnInputChange(){
+            if(recipeGrid == null) return;
             for(int i = 0; i < recipeGrid.transform.childCount; ++i){
                 recipeGrid.transform.GetChild(i).GetComponent<RecipeSlot>().recipeUI.Destroy();
             }

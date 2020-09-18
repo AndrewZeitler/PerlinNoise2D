@@ -11,6 +11,7 @@ namespace UI.Elements {
         public ItemSlot itemSlot { get; protected set; }
 
         public virtual void SlotChanged(){
+            if(gameObject == null) return;
             ItemSlot slot = gameObject.GetComponent<ItemSlot>();
             if(slot == null) return;
             ItemStack item = slot.inventory.GetItemStackAt(slot.index);

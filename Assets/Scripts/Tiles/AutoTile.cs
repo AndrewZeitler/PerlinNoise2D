@@ -41,9 +41,9 @@ namespace Tiles {
 
             int other = TerrainBrush.GetOtherType(ids, 1, 1, tileType);
             if(tileType == TerrainBrush.TileType.Error){
-                // tile.SetTileData(TileData.idToData[other]);
-                // return;
-                SetTileAsCenter();
+                tile.SetTileData(TileData.idToData[other]);
+                return;
+                //SetTileAsCenter();
             } else {
                 string name = "";
                 if(other != -1){
@@ -56,6 +56,12 @@ namespace Tiles {
                 } else {
                     SetTileAsCenter();
                 }
+            }
+            tile.spriteRenderer.sprite = sprite;
+            if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();
+            if(!sprite){
+                int rand = Random.Range(0, tileAmounts);
+                sprite = SpriteManager.GetTileSprite(tile.tileData.Name + rand.ToString());
             }
             tile.spriteRenderer.sprite = sprite;
             if(!tile.tileData.IsWalkable) tile.gameObject.AddComponent<PolygonCollider2D>();

@@ -29,7 +29,8 @@ namespace Tiles {
         public void OnInteract(Entity entity){
             Player player = entity as Player;
             if(player != null){
-                PageUI pageUI = MenuManager.CreatePage(name);
+                PageUI pageUI = MenuManager.CreatePage(name, this);
+                UnityEngine.Debug.Log(pageUI);
                 WorkBenchUI workBenchUI = new WorkBenchUI();
                 workBenchUI.CreateUI(craftingData, input, output, pageUI);
                 if(!MenuManager.IsMenuActive()) MenuManager.ToggleMenu();

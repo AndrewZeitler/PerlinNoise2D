@@ -26,7 +26,7 @@ public class ProceduralGenerator : MonoBehaviour
                 if(((x == 0 && dir.x == 1) || (x == loadWidth - 1 && dir.x == -1)) || 
                    ((y == 0 && dir.y == 1) || (y == loadHeight - 1 && dir.y == -1))) {
                        StartCoroutine(world[x, y].DestroyChunk());
-                       if(world[x,y].chunkState == ChunkState.Rendered) world[x,y].chunkState = ChunkState.Generated;
+                       if(world[x,y].chunkState == ChunkState.Rendered || world[x,y].chunkState == ChunkState.Rendering) world[x,y].chunkState = ChunkState.Generated;
                        world[x,y] = null;
                 } else {
                     world[x - (int)dir.x, y - (int)dir.y] = world[x,y];
@@ -42,6 +42,7 @@ public class ProceduralGenerator : MonoBehaviour
     }
 
     public void Initialize() {
+        // seed: 3736690
         generator = new WorldGenerator();
         Chunk.chunkSize = chunkSize;
         world = new Chunk[loadWidth, loadHeight];
@@ -65,13 +66,14 @@ public class ProceduralGenerator : MonoBehaviour
         int xp = (int)player.transform.position.x / chunkSize;
         int yp = (int)player.transform.position.y / chunkSize;
         prevPlayerPos = new Vector2(xp, yp);
-        for(int x = 0; x < loadWidth; ++x){
-            for(int y = 0; y < loadHeight; ++y){
-                //StartCoroutine(world[x, y].DestroyChunk());
-                world[x, y] = null;
-            }
-        }
+        // for(int x = 0; x < loadWidth; ++x){
+        //     for(int y = 0; y < loadHeight; ++y){
+        //         //StartCoroutine(world[x, y].DestroyChunk());
+        //         world[x, y] = null;
+        //     }
+        // }
         GenerateNewTerrain(xp, yp);
+        generator.LoadChunks(world);
         playerCreated = true;
     }
 

@@ -36,6 +36,7 @@ namespace Tiles {
                 }
             }
             TerrainBrush.TileType tileType = TerrainBrush.GetTileType(ids, 1, 1);
+            //TerrainBrush.TileType tileType = TerrainBrush.TileType.Center;
             int other = TerrainBrush.GetOtherType(ids, 1, 1, tileType);
             if(tileType == TerrainBrush.TileType.Error){
                 tile.SetTileData(TileData.idToData[other]);
@@ -66,7 +67,8 @@ namespace Tiles {
         public void ChangeFrame(){
             currFrame += inc;
             if(currFrame == frames - 1 || currFrame == 0) inc *= -1;
-            tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + "_" + currFrame.ToString());
+            if(tile.spriteRenderer != null) 
+                tile.spriteRenderer.sprite = SpriteManager.GetTileSprite(name + "_" + currFrame.ToString());
         }
 
         public void StopAnimation(){

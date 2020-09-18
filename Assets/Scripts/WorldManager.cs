@@ -7,6 +7,11 @@ using Entities;
 namespace World {
     public static class WorldManager {
         static Dictionary<Vector2, Chunk> loadedChunks = new Dictionary<Vector2, Chunk>();
+        public static Dimensions.Dimension Dimension { get; private set; }
+
+        public static void SetDimension(string dimName){
+            Dimension = Dimensions.DimensionRegistry.Dimensions[dimName];
+        }
 
         public static void AddChunk(Vector2 pos, Chunk chunk){
             loadedChunks.Add(pos, chunk);

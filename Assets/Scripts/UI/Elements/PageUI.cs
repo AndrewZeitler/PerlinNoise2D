@@ -11,6 +11,7 @@ namespace UI {
 
         public static GameObject pagePrefab;
         public static GameObject slotPrefab;
+        public System.Object obj { get; private set; }
         public GameObject page { get; private set; }
         public GameObject viewport { get; private set; }
         public GameObject content { get; private set; }
@@ -18,7 +19,9 @@ namespace UI {
 
         public List<Inventory> inventories = new List<Inventory>();
 
-        public PageUI(string name){
+        public PageUI(string name, System.Object obj){
+            if(obj == null) return;
+            this.obj = obj;
             if(pagePrefab == null) {
                 pagePrefab = Resources.Load("Prefabs/Page") as GameObject;
             }
@@ -40,28 +43,7 @@ namespace UI {
             GameObject panel = page.transform.GetChild(1).gameObject;
 
             scroll = panel.transform.GetChild(0).gameObject;
-            // RectTransform scrollRect = scroll.AddComponent<RectTransform>();
-            // scrollRect.anchorMin = Vector2.zero;
-            // scrollRect.anchorMax = Vector2.one;
-            // scroll.AddComponent<ScrollRect>();
-            // ContentSizeFitter scrollSizeFitter = scroll.AddComponent<ContentSizeFitter>();
-            // scrollSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            // scrollSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            // scroll.transform.SetParent(panel.transform);
-
             viewport = scroll.transform.GetChild(0).gameObject;
-            // RectTransform contentTransform = content.AddComponent<RectTransform>();
-            // contentTransform.anchorMin = new Vector2(0.025f, 0.5f);
-            // contentTransform.anchorMax = new Vector2(0.975f, 0.5f);
-            // ContentSizeFitter contentSizeFitter = content.AddComponent<ContentSizeFitter>();
-            // contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            // contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            // content.transform.SetParent(scroll.transform);
-
-            // scroll.GetComponent<ScrollRect>().content = contentTransform;
-            // scroll.GetComponent<ScrollRect>().scrollSensitivity = 50;
-            // RectTransform scrollTransform = scroll.GetComponent<RectTransform>();
-            // scrollTransform.offsetMin = scrollTransform.offsetMax = Vector3.zero;
         }
 
         public void PageChanged(){
@@ -96,6 +78,12 @@ namespace UI {
             content.transform.SetParent(viewport.transform);
             scroll.GetComponent<ScrollRect>().content = content.GetComponent<RectTransform>();
             this.content = content;
+        }
+
+        public void DestroyUI(){
+            RectTransform.Destroy(page);
+            RectTransform.Destroy(viewport);
+            RectTransform.Destroy(content);
         }
     }
 

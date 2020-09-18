@@ -1,9 +1,9 @@
 namespace World {
         public enum ChunkState {
                 NotGenerated,
+                Generating,
                 Generated,
-                Smoothed,
-                Saved,
+                Rendering,
                 Rendered
         };
 }

@@ -143,6 +143,8 @@ namespace Tiles {
         public void DestroyTile(){
             objectCreated = false;
             Object.Destroy(gameObject);
+            spriteRenderer = null;
+            tileScript = null;
         }
     }
 }

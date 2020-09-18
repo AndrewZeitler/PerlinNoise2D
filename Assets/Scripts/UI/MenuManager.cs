@@ -50,6 +50,11 @@ namespace UI {
                 pages[currentTab].page.transform.SetAsLastSibling();
                 pages[currentTab].page.transform.GetChild(0).GetComponent<Image>().color = new Color(240 / 255f, 240 / 255f, 1);
             } else {
+                for(int i = 1; i < pages.Count; ++i){
+                    pages[i].DestroyUI();
+                }
+                if(pages.Count > 1) pages.RemoveRange(1, pages.Count - 1);
+                currentTab = 0;
                 if(descriptor != null) {
                     descriptor.DestroyUI();
                     descriptor = null;
@@ -62,15 +67,16 @@ namespace UI {
             return menu.activeSelf;
         }
 
-        public static PageUI CreatePage(string name){
+        public static PageUI CreatePage(string name, System.Object obj){
             if(pages.Count >= 10) return null;
-            PageUI page = new PageUI(name);
+            foreach(PageUI p in pages) if(p.obj == obj) return null;
+            PageUI page = new PageUI(name, obj);
             pages.Add(page);
             return page;
         }
 
         public static bool AddComponentDisplay(Inventory inventory){
-            PageUI page = CreatePage(inventory.GetName());
+            PageUI page = CreatePage(inventory.GetName(), inventory);
             if(page == null) return false;
             InventoryUI inventoryUI = new InventoryUI();
             inventoryUI.CreateUI(inventory, page);
@@ -79,7 +85,7 @@ namespace UI {
 
         public static void CreateHUD(Player player){
             // Create inventory page
-            PageUI page = CreatePage("Inventory");
+            PageUI page = CreatePage("Inventory", player);
             PlayerInventoryUI playerInventory = new PlayerInventoryUI();
             playerInventory.CreateUI(player, page);
 

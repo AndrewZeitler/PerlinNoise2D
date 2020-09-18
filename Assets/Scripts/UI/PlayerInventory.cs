@@ -26,7 +26,7 @@ namespace UI {
             RectTransform transform = inventoryUI.GetComponent<RectTransform>();
             transform.offsetMax = transform.offsetMin = Vector2.zero;
 
-            for(int i = 0; i < inventory.GetInventorySize(); ++i){
+            for(int i = Player.HOTBAR_SIZE; i < inventory.GetInventorySize(); ++i){
                 /////////////////////*******************************//////////////////////////
                 OpenSlotUI slot = new OpenSlotUI(i, inventory);
                 slot.SetParent(inventoryUI.transform);
